@@ -15,18 +15,6 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal">
-    <TextView
-        android:id="@+id/whoseMoveTextView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
         >
         <ImageView
             android:id="@+id/point1"
@@ -277,9 +265,16 @@
             android:layout_height="match_parent"
             />
     </TableRow>
-        <Button
-            android:id="@+id/clearBoardButton"
-            android:text="@string/clearBoardButton"
-            android:layout_width="wrap_content"
-            />
+    <Button
+        android:id="@+id/clearBoardButton"
+        android:text="@string/clearBoardButton"
+        android:layout_width="wrap_content"
+        />
+    <TextView
+        android:id="@+id/whoseMoveTextView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        />
+
 </TableLayout>
