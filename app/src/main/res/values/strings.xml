@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">BetaGo</string>
+    <string name="clearBoardButton">Clear Board</string>
+</resources>
