@@ -132,12 +132,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private View clearBoardButton;
     private TextView whoseMoveTextView;
     private static final String TAG = "betago.MainActivity";
-    int layoutResId = R.layout.nineteen_by_ninteen_board;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(layoutResId);
+        setContentView(R.layout.activity_main);
 
         for (int i = 0; i < imageIds.length; i++) {
             int id = imageIds[i];
