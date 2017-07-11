@@ -129,7 +129,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected ImageView[] tileViews = new ImageView[imageIds.length];
     protected Boolean[] isPointTaken = new Boolean[imageIds.length];
     protected boolean isBlacksMove;
-    private View clearBoardButton;
+    private View clearBoardButton, confirmMoveButton, cancelMoveButton;
+    private Integer lastClickedIndex;
+    private ImageView lastImageView;
     private TextView whoseMoveTextView;
     private static final String TAG = "betago.MainActivity";
 
@@ -148,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         isBlacksMove = true;
 
         whoseMoveTextView = (TextView) findViewById(R.id.whoseMoveTextView);
-        whoseMoveTextView.setText("Black's turn");
+        whoseMoveTextView.setText("Black's Turn");
 
         clearBoardButton = findViewById(R.id.clearBoardButton);
         clearBoardButton.setOnClickListener(new View.OnClickListener() {
@@ -158,10 +160,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 resetGame();
             }
         });
+
+        confirmMoveButton = findViewById(R.id.confirmMoveButton);
+        confirmMoveButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                isBlacksMove = !isBlacksMove;
+                String whoseMoveText = isBlacksMove ? "Black's Turn" : "White's Turn";
+                whoseMoveTextView.setText(whoseMoveText);
+                toggleButtons();
+            }
+        });
+
+        cancelMoveButton = findViewById(R.id.cancelMoveButton);
+        cancelMoveButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                isPointTaken[lastClickedIndex] = false;
+                lastImageView.setImageResource(R.drawable.ic_add_black_48dp);
+                String whoseMoveText = isBlacksMove ? "Black's Turn" : "White's Turn";
+                whoseMoveTextView.setText(whoseMoveText);
+                toggleButtons();
+            }
+        });
+        toggleButtons();
+
     }
 
     @Override
     public void onClick(View v) {
+        if (confirmMoveButton.isEnabled()) return;
+
         Log.d(TAG, "onClick: " + v);
         ImageView thisImageView = (ImageView) v;
 
@@ -177,6 +208,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // clicked on something other than game board
         if (ix == -1) return;
 
+        lastImageView = thisImageView;
+        lastClickedIndex = ix;
+
         int row = ix % 6;
         int col = ix / 6;
 
@@ -184,12 +218,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             isPointTaken[ix] = true;
             if (isBlacksMove == true) {
                 thisImageView.setImageResource(R.drawable.ic_fiber_manual_record_black_48dp);
-                whoseMoveTextView.setText("White's turn");
             } else {
                 thisImageView.setImageResource(R.drawable.ic_panorama_fish_eye_black_48dp);
-                whoseMoveTextView.setText("Black's turn");
             }
-            isBlacksMove = !isBlacksMove;
+            whoseMoveTextView.setText("Confirm or Cancel");
+            toggleButtons();
         }
 
     }
@@ -202,6 +235,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         Arrays.fill(isPointTaken, Boolean.FALSE);
         isBlacksMove = true;
-        whoseMoveTextView.setText("Black's turn");
+        whoseMoveTextView.setText("Black's Turn");
+    }
+
+    private void toggleButtons() {
+        confirmMoveButton.setEnabled(!confirmMoveButton.isEnabled());
+        cancelMoveButton.setEnabled(!cancelMoveButton.isEnabled());
     }
 }
