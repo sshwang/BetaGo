@@ -3,6 +3,8 @@ package com.somestupidappproject.betago;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -129,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected ImageView[] tileViews = new ImageView[imageIds.length];
     protected Boolean[] isPointTaken = new Boolean[imageIds.length];
     protected boolean isBlacksMove;
-    private View clearBoardButton, confirmMoveButton, cancelMoveButton;
+    private View confirmMoveButton, cancelMoveButton;
     private Integer lastClickedIndex;
     private ImageView lastImageView;
     private TextView whoseMoveTextView;
@@ -151,15 +153,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         whoseMoveTextView = (TextView) findViewById(R.id.whoseMoveTextView);
         whoseMoveTextView.setText("Black's Turn");
-
-        clearBoardButton = findViewById(R.id.clearBoardButton);
-        clearBoardButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                resetGame();
-            }
-        });
 
         confirmMoveButton = findViewById(R.id.confirmMoveButton);
         confirmMoveButton.setOnClickListener(new View.OnClickListener() {
@@ -226,6 +219,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.clearBoard) {
+            resetGame();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
     private void resetGame() {
         for (int i = 0; i < isPointTaken.length; i++) {
