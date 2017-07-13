@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ImageView thisImageView = (ImageView) v;
 
         // which view am i? find index in array
-        Point ix = new Point(-1,-1);
+        Point ix = new Point();
         for (int i = 0; i < boardSize; i++) {
             for (int j=0; j < boardSize; j++ ) {
 

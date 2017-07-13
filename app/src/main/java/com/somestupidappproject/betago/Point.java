@@ -16,10 +16,9 @@ public class Point {
 
     public int PreviousColor = 0;
 
-    // defaults to 0
+    // defaults to -1,-1
     public Point() {
-        this.X = 0;
-        this.Y = 0;
+        this(-1,-1);
     }
 
     public Point(int x, int y) {
