@@ -1,5 +1,6 @@
 package com.somestupidappproject.betago;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -22,7 +25,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected boolean isBlacksMove;
     private View confirmMoveButton, cancelMoveButton;
     private Point lastClickedIndex;
-    private HashSet<Point> capturedTiles = new HashSet<Point>(){};
+    private HashSet<Point> capturedTiles = new HashSet<Point>() {
+    };
     private ImageView lastImageView;
     private TextView whoseMoveTextView;
     private static final String TAG = "betago.MainActivity";
@@ -150,11 +154,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // initializing the board view with click listeners
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
-                int id = i*boardSize + j;
+                int id = i * boardSize + j;
                 Log.d(TAG, "finding id " + id);
 
                 // Creating a point object to store image id, and state
-                Point point = new Point(i,j);
+                Point point = new Point(i, j);
                 point.setImageId(imageIdsFlat[id]);
                 point.setTakeState(0);
                 board[i][j] = point;
@@ -189,15 +193,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
                 board[lastClickedIndex.X][lastClickedIndex.Y].revertState();
-                for (Point p: capturedTiles) {
+                for (Point p : capturedTiles) {
                     board[p.X][p.Y].revertState();
-                    if (board[p.X][p.Y].Color == 1){
+                    if (board[p.X][p.Y].Color == 1) {
                         tileViews[p.X][p.Y].setImageResource(R.drawable.ic_fiber_manual_record_black_48dp);
-                    }
-                    else if (board[p.X][p.Y].Color == 2){
+                    } else if (board[p.X][p.Y].Color == 2) {
                         tileViews[p.X][p.Y].setImageResource(R.drawable.ic_panorama_fish_eye_black_48dp);
-                    }
-                    else {
+                    } else {
                         tileViews[p.X][p.Y].setImageResource(R.drawable.ic_add_black_48dp);
                     }
                 }
@@ -223,10 +225,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // which view am i? find index in array
         Point ix = new Point();
         for (int i = 0; i < boardSize; i++) {
-            for (int j=0; j < boardSize; j++ ) {
+            for (int j = 0; j < boardSize; j++) {
 
                 if (board[i][j].ImageId == v.getId()) {
-                    ix.addCoordinates(i,j);
+                    ix.addCoordinates(i, j);
                     break;
                 }
             }
@@ -238,7 +240,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         lastImageView = thisImageView;
         lastClickedIndex = ix;
 
-
         if (board[ix.X][ix.Y].Color == 0) {
             if (isBlacksMove == true) {
                 tileViews[ix.X][ix.Y].setImageResource(R.drawable.ic_fiber_manual_record_black_48dp);
@@ -248,15 +249,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 board[ix.X][ix.Y].setTakeState(2);
             }
 
-            HashSet<Point> neighbors = destroyer.getNeighbors(board[ix.X][ix.Y], board);
-            for (Point neighbor : neighbors){
-                if (destroyer.isDead(neighbor, board)){
-                    tileViews[neighbor.X][neighbor.Y].setImageResource(R.drawable.ic_add_black_48dp);
-                    board[neighbor.X][neighbor.Y].setTakeState(0);
-                    Log.d(TAG, "DEAD");
-                    capturedTiles.add(neighbor);
-                }
-            }
+            Point point = new Point(ix.X, ix.Y);
+            DidPointCauseCaptureAsyncTask didPointCauseCaptureAsyncTask = new DidPointCauseCaptureAsyncTask(point, board);
+            didPointCauseCaptureAsyncTask.execute();
 
             whoseMoveTextView.setText("Confirm or Cancel");
             toggleButtons();
@@ -284,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void resetGame() {
         for (int i = 0; i < boardSize; i++) {
-            for (int j =0; j < boardSize; j++) {
+            for (int j = 0; j < boardSize; j++) {
                 if (board[i][j].Color != 0) {
                     tileViews[i][j].setImageResource(R.drawable.ic_add_black_48dp);
                 }
@@ -304,5 +299,90 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void toggleButtons() {
         confirmMoveButton.setEnabled(!confirmMoveButton.isEnabled());
         cancelMoveButton.setEnabled(!cancelMoveButton.isEnabled());
+    }
+
+    class DidPointCauseCaptureAsyncTask extends AsyncTask<Void, Void, ArrayList<Point>> {
+
+        private Point[][] board;
+        private Point point;
+
+        public DidPointCauseCaptureAsyncTask(Point point, Point[][] board) {
+            this.point = point;
+            this.board = board;
+        }
+
+        public HashSet<Point> getNeighbors(Point point, Point[][] board) {
+            int x = point.X;
+            int y = point.Y;
+            HashSet<Point> ret = new HashSet<Point>() {
+            };
+
+            if (y + 1 < 19) {
+                ret.add(board[x][y + 1]);
+            }
+            if (y - 1 > -1) {
+                ret.add(board[x][y - 1]);
+            }
+            if (x + 1 < 19) {
+                ret.add(board[x + 1][y]);
+            }
+            if (x - 1 > 0) {
+                ret.add(board[x - 1][y]);
+            }
+
+            return ret;
+        }
+
+        @Override
+        protected ArrayList<Point> doInBackground(Void... params) {
+
+            ArrayList<Point> deadPoints = new ArrayList<>();
+            if (point == null) {
+                return deadPoints;
+            }
+
+            // Get all neighbors and also check if the placed point is surrounded
+            HashSet<Point> neighbors = this.getNeighbors(point, board);
+            neighbors.add(point);
+
+            for (Point neighbor : neighbors) {
+                int x = neighbor.X;
+                int y = neighbor.Y;
+                int color = neighbor.Color;
+
+                // This is probably an error case
+                // the point should be untaken
+                if (color == 0) {
+                    continue;
+                }
+
+                // We now know that there is an object here, we have to check
+                // if this new object is dead or not.
+                Point north = board[x][y + 1];
+                Point south = board[x][y - 1];
+                Point east = board[x + 1][y];
+                Point west = board[x - 1][y];
+
+                // means the spot is un occupied
+                if (north.Color == 0 || south.Color == 0 || east.Color == 0 || west.Color == 0) {
+                    continue;
+                }
+
+                // point is dead. add to list to remove it
+                deadPoints.add(neighbor);
+            }
+
+            return deadPoints;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Point> deadPoints) {
+            for (Point deadPoint : deadPoints) {
+                tileViews[deadPoint.X][deadPoint.Y].setImageResource(R.drawable.ic_add_black_48dp);
+                board[deadPoint.X][deadPoint.Y].setTakeState(0);
+                Log.d(TAG, "DEAD");
+                capturedTiles.add(deadPoint);
+            }
+        }
     }
 }
