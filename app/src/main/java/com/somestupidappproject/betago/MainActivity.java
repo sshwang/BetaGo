@@ -191,9 +191,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     isBlacksMove = !isBlacksMove;
                     String whoseMoveText = isBlacksMove ? "Black's Turn" : "White's Turn";
                     whoseMoveTextView.setText(whoseMoveText);
+                    if (previousMoves.size() == 0) {
+                        undoMoveButton.setEnabled(false);
+                    }
                 }
             }
         });
+        undoMoveButton.setEnabled(false);
+
 
     }
 
@@ -332,6 +337,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         protected void onPostExecute(ArrayList<Point> deadPoints) {
             lastMove.setCapturedPoints(deadPoints);
             previousMoves.add(lastMove);
+            undoMoveButton.setEnabled(true);
             for (Point deadPoint : deadPoints) {
                 int x = deadPoint.getX();
                 int y = deadPoint.getY();
