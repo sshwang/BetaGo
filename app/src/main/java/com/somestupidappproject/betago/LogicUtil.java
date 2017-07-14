@@ -7,24 +7,24 @@ import java.util.HashSet;
  */
 
 public class LogicUtil {
-
     // Get the neighbors of the given node
     public HashSet<Point> getNeighbors(Point point, Point[][] board) {
         int x = point.X;
         int y = point.Y;
-        HashSet<Point> ret = new HashSet<Point>(){};
+        HashSet<Point> ret = new HashSet<Point>() {
+        };
 
         if ( y + 1 < 19 ){
             ret.add(board[x][y+1]);
         }
         if (y - 1 > -1) {
-            ret.add(board[x][y-1]);
+            ret.add(board[x][y - 1]);
         }
-        if (x + 1 < 19){
-            ret.add(board[x+1][y]);
+        if (x + 1 < 19) {
+            ret.add(board[x + 1][y]);
         }
-        if (x-1 > 0 ){
-            ret.add(board[x-1][y]);
+        if (x - 1 > 0) {
+            ret.add(board[x - 1][y]);
         }
 
         return ret;
@@ -115,4 +115,5 @@ public class LogicUtil {
         return false;
     }
 }
+
 
