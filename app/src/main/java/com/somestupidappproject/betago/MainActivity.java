@@ -305,32 +305,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         private Point[][] board;
         private Point point;
+        private LogicUtil destroyer = new LogicUtil();
 
         public DidPointCauseCaptureAsyncTask(Point point, Point[][] board) {
             this.point = point;
             this.board = board;
-        }
-
-        public HashSet<Point> getNeighbors(Point point, Point[][] board) {
-            int x = point.X;
-            int y = point.Y;
-            HashSet<Point> ret = new HashSet<Point>() {
-            };
-
-            if (y + 1 < 19) {
-                ret.add(board[x][y + 1]);
-            }
-            if (y - 1 > -1) {
-                ret.add(board[x][y - 1]);
-            }
-            if (x + 1 < 19) {
-                ret.add(board[x + 1][y]);
-            }
-            if (x - 1 > 0) {
-                ret.add(board[x - 1][y]);
-            }
-
-            return ret;
         }
 
         @Override
@@ -342,34 +321,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             // Get all neighbors and also check if the placed point is surrounded
-            HashSet<Point> neighbors = this.getNeighbors(point, board);
-            neighbors.add(point);
+            HashSet<Point> neighbors = this.destroyer.getNeighbors(point, board);
 
             for (Point neighbor : neighbors) {
-                int x = neighbor.X;
-                int y = neighbor.Y;
-                int color = neighbor.Color;
-
-                // This is probably an error case
-                // the point should be untaken
-                if (color == 0) {
-                    continue;
+                if (!destroyer.isAlive(neighbor, board)){
+                    // Point is dead which means it's group is also dead
+                    // Find the group here
+                    HashSet<Point> group = destroyer.findGroup(neighbor, board);
+                    deadPoints.addAll(group);
                 }
-
-                // We now know that there is an object here, we have to check
-                // if this new object is dead or not.
-                Point north = board[x][y + 1];
-                Point south = board[x][y - 1];
-                Point east = board[x + 1][y];
-                Point west = board[x - 1][y];
-
-                // means the spot is un occupied
-                if (north.Color == 0 || south.Color == 0 || east.Color == 0 || west.Color == 0) {
-                    continue;
-                }
-
-                // point is dead. add to list to remove it
-                deadPoints.add(neighbor);
             }
 
             return deadPoints;
