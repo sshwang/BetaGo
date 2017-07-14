@@ -23,7 +23,7 @@ public class LogicUtil {
         if (x + 1 < 19) {
             ret.add(board[x + 1][y]);
         }
-        if (x - 1 > 0) {
+        if (x - 1 > -1) {
             ret.add(board[x - 1][y]);
         }
 
@@ -34,13 +34,13 @@ public class LogicUtil {
     // Returns: whether or not the node is dead
     // if there is no node on that point method return false
     public boolean isAlive( Point point, Point[][] board ){
-        return isAliveRecursive(point, board, new HashSet<Point>(){});
+        return this.isAliveRecursive(point, board, new HashSet<Point>(){});
     }
 
     // Function that will return the group of nodes of the same color
     // touching the node given
     public HashSet<Point> findGroup(Point point, Point[][] board) {
-        return findGroupRecursive(point, board, new HashSet<Point>(){});
+        return this.findGroupRecursive(point, board, new HashSet<Point>(){});
     }
 
     private HashSet<Point> findGroupRecursive(Point point, Point[][] board, HashSet<Point> groupFound) {

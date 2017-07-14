@@ -36,8 +36,11 @@ public class Point {
     }
 
     public void setTakeState(int color){
-        this.PreviousColor = this.Color;
-        this.Color = color;
+        // only update the color if they are different
+        if (this.Color != color) {
+            this.PreviousColor = this.Color;
+            this.Color = color;
+        }
     }
 
     public void revertState(){
