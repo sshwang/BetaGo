@@ -23,7 +23,7 @@ public class LogicUtil {
         if (x + 1 < 19) {
             ret.add(board[x + 1][y]);
         }
-        if (x - 1 > 0) {
+        if (x - 1 > -1) {
             ret.add(board[x - 1][y]);
         }
 

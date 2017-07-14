@@ -20,13 +20,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     protected ImageView[][] tileViews = new ImageView[boardSize][boardSize];
     protected boolean isBlacksMove;
-    private View confirmMoveButton, cancelMoveButton;
+    private View undoMoveButton;
     private Point lastClickedIndex;
-    private HashSet<Point> capturedTiles = new HashSet<Point>() {
-    };
+    private ArrayList<Move> previousMoves;
     private ImageView lastImageView;
     private TextView whoseMoveTextView;
     private static final String TAG = "betago.MainActivity";
+    private Move lastMove;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,55 +166,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
+        previousMoves = new ArrayList<Move>();
+
         isBlacksMove = true;
 
         whoseMoveTextView = (TextView) findViewById(R.id.whoseMoveTextView);
         whoseMoveTextView.setText("Black's Turn");
 
-        confirmMoveButton = findViewById(R.id.confirmMoveButton);
-        confirmMoveButton.setOnClickListener(new View.OnClickListener() {
+        undoMoveButton = findViewById(R.id.undoMoveButton);
+        undoMoveButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                isBlacksMove = !isBlacksMove;
-                String whoseMoveText = isBlacksMove ? "Black's Turn" : "White's Turn";
-                whoseMoveTextView.setText(whoseMoveText);
-                capturedTiles.clear();
-                toggleButtons();
-            }
-        });
+                if (previousMoves.size() > 0) {
 
-        cancelMoveButton = findViewById(R.id.cancelMoveButton);
-        cancelMoveButton.setOnClickListener(new View.OnClickListener() {
+                    Move m = previousMoves.get(previousMoves.size() - 1);
+                    m.point.revertState();
+                    m.imageView.setImageResource(R.drawable.ic_add_black_48dp);
 
-            @Override
-            public void onClick(View v) {
-                board[lastClickedIndex.X][lastClickedIndex.Y].revertState();
-                for (Point p : capturedTiles) {
-                    board[p.X][p.Y].revertState();
-                    if (board[p.X][p.Y].Color == 1) {
-                        tileViews[p.X][p.Y].setImageResource(R.drawable.ic_fiber_manual_record_black_48dp);
-                    } else if (board[p.X][p.Y].Color == 2) {
-                        tileViews[p.X][p.Y].setImageResource(R.drawable.ic_panorama_fish_eye_black_48dp);
+                    board[m.point.X][m.point.Y].revertState();
+                    if (board[m.point.X][m.point.Y].Color == 1) {
+                        tileViews[m.point.X][m.point.Y].setImageResource(R.drawable.ic_fiber_manual_record_black_48dp);
+                    } else if (board[m.point.X][m.point.Y].Color == 2) {
+                        tileViews[m.point.X][m.point.Y].setImageResource(R.drawable.ic_panorama_fish_eye_black_48dp);
                     } else {
-                        tileViews[p.X][p.Y].setImageResource(R.drawable.ic_add_black_48dp);
+                        tileViews[m.point.X][m.point.Y].setImageResource(R.drawable.ic_add_black_48dp);
                     }
-                }
 
-                capturedTiles.clear();
-                lastImageView.setImageResource(R.drawable.ic_add_black_48dp);
-                String whoseMoveText = isBlacksMove ? "Black's Turn" : "White's Turn";
-                whoseMoveTextView.setText(whoseMoveText);
-                toggleButtons();
+                    for (Point p : m.capturedPoints) {
+                        board[p.X][p.Y].revertState();
+                        if (board[p.X][p.Y].Color == 1) {
+                            tileViews[p.X][p.Y].setImageResource(R.drawable.ic_fiber_manual_record_black_48dp);
+                        } else if (board[p.X][p.Y].Color == 2) {
+                            tileViews[p.X][p.Y].setImageResource(R.drawable.ic_panorama_fish_eye_black_48dp);
+                        } else {
+                            tileViews[p.X][p.Y].setImageResource(R.drawable.ic_add_black_48dp);
+                        }
+                    }
+
+                    previousMoves.remove(previousMoves.size() - 1);
+                    isBlacksMove = !isBlacksMove;
+                    String whoseMoveText = isBlacksMove ? "Black's Turn" : "White's Turn";
+                    whoseMoveTextView.setText(whoseMoveText);
+                }
             }
         });
-        toggleButtons();
 
     }
 
     @Override
     public void onClick(View v) {
-        if (confirmMoveButton.isEnabled()) return;
 
         Log.d(TAG, "onClick: " + v);
         ImageView thisImageView = (ImageView) v;
@@ -234,7 +235,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // clicked on something other than game board
         if (ix.X == -1 && ix.Y == -1) return;
 
-        lastImageView = thisImageView;
+        Move lm = new Move();
+        lm.imageView = thisImageView;
         lastClickedIndex = ix;
 
         if (board[ix.X][ix.Y].Color == 0) {
@@ -246,12 +248,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 board[ix.X][ix.Y].setTakeState(2);
             }
 
-            Point point = new Point(ix.X, ix.Y);
-            DidPointCauseCaptureAsyncTask didPointCauseCaptureAsyncTask = new DidPointCauseCaptureAsyncTask(point, board);
+            lm.point = board[ix.X][ix.Y];
+            lastMove = lm;
+            DidPointCauseCaptureAsyncTask didPointCauseCaptureAsyncTask = new DidPointCauseCaptureAsyncTask(board[ix.X][ix.Y], board);
             didPointCauseCaptureAsyncTask.execute();
 
-            whoseMoveTextView.setText("Confirm or Cancel");
-            toggleButtons();
+            isBlacksMove = !isBlacksMove;
+            String whoseMoveText = isBlacksMove ? "Black's Turn" : "White's Turn";
+            whoseMoveTextView.setText(whoseMoveText);
         }
 
     }
@@ -293,11 +297,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         whoseMoveTextView.setText("Black's Turn");
     }
 
-    private void toggleButtons() {
-        confirmMoveButton.setEnabled(!confirmMoveButton.isEnabled());
-        cancelMoveButton.setEnabled(!cancelMoveButton.isEnabled());
-    }
-
     class DidPointCauseCaptureAsyncTask extends AsyncTask<Void, Void, ArrayList<Point>> {
 
         private Point[][] board;
@@ -333,11 +332,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         protected void onPostExecute(ArrayList<Point> deadPoints) {
+            lastMove.capturedPoints = deadPoints;
+            previousMoves.add(lastMove);
             for (Point deadPoint : deadPoints) {
                 tileViews[deadPoint.X][deadPoint.Y].setImageResource(R.drawable.ic_add_black_48dp);
                 board[deadPoint.X][deadPoint.Y].setTakeState(0);
                 Log.d(TAG, "DEAD");
-                capturedTiles.add(deadPoint);
             }
         }
     }
