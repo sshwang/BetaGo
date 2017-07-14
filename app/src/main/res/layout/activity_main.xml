@@ -2322,14 +2322,8 @@
         android:gravity="center_horizontal" />
 
     <Button
-        android:id="@+id/confirmMoveButton"
+        android:id="@+id/undoMoveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/confirmMoveButton" />
-
-    <Button
-        android:id="@+id/cancelMoveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/cancelMoveButton" />
+        android:text="@string/undoMoveButton" />
 </TableLayout>
