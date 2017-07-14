@@ -9,19 +9,36 @@ import java.util.ArrayList;
  */
 
 public class Move {
-    public Point point;
-    public ArrayList<Point> capturedPoints;
-    public ImageView imageView;
+
+    private Point point;
+    private ArrayList<Point> capturedPoints;
+    private ImageView imageView;
 
     public Move() {
     }
 
-    public Move(Point point) {
+    public Point getPoint() {
+        return point;
+    }
+
+    public void setPoint(Point point) {
         this.point = point;
     }
 
-    public Move(Point point, ArrayList<Point> capturedPoints) {
-        this.point = point;
+    public ArrayList<Point> getCapturedPoints() {
+        return capturedPoints;
+    }
+
+    public void setCapturedPoints(ArrayList<Point> capturedPoints) {
         this.capturedPoints = capturedPoints;
     }
+
+    public ImageView getImageView() {
+        return imageView;
+    }
+
+    public void setImageView(ImageView imageView) {
+        this.imageView = imageView;
+    }
+
 }

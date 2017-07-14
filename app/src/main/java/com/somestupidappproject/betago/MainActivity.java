@@ -21,9 +21,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected ImageView[][] tileViews = new ImageView[boardSize][boardSize];
     protected boolean isBlacksMove;
     private View undoMoveButton;
-    private Point lastClickedIndex;
     private ArrayList<Move> previousMoves;
-    private ImageView lastImageView;
     private TextView whoseMoveTextView;
     private static final String TAG = "betago.MainActivity";
     private Move lastMove;
@@ -166,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-        previousMoves = new ArrayList<Move>();
+        previousMoves = new ArrayList<>();
 
         isBlacksMove = true;
 
@@ -181,27 +179,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (previousMoves.size() > 0) {
 
                     Move m = previousMoves.get(previousMoves.size() - 1);
-                    m.point.revertState();
-                    m.imageView.setImageResource(R.drawable.ic_add_black_48dp);
+                    m.getPoint().revertState();
+                    m.getImageView().setImageResource(R.drawable.ic_add_black_48dp);
 
-                    board[m.point.X][m.point.Y].revertState();
-                    if (board[m.point.X][m.point.Y].Color == 1) {
-                        tileViews[m.point.X][m.point.Y].setImageResource(R.drawable.ic_fiber_manual_record_black_48dp);
-                    } else if (board[m.point.X][m.point.Y].Color == 2) {
-                        tileViews[m.point.X][m.point.Y].setImageResource(R.drawable.ic_panorama_fish_eye_black_48dp);
-                    } else {
-                        tileViews[m.point.X][m.point.Y].setImageResource(R.drawable.ic_add_black_48dp);
-                    }
-
-                    for (Point p : m.capturedPoints) {
-                        board[p.X][p.Y].revertState();
-                        if (board[p.X][p.Y].Color == 1) {
-                            tileViews[p.X][p.Y].setImageResource(R.drawable.ic_fiber_manual_record_black_48dp);
-                        } else if (board[p.X][p.Y].Color == 2) {
-                            tileViews[p.X][p.Y].setImageResource(R.drawable.ic_panorama_fish_eye_black_48dp);
-                        } else {
-                            tileViews[p.X][p.Y].setImageResource(R.drawable.ic_add_black_48dp);
-                        }
+                    revertPoint(m.getPoint());
+                    for (Point p :m.getCapturedPoints()) {
+                        revertPoint(p);
                     }
 
                     previousMoves.remove(previousMoves.size() - 1);
@@ -222,35 +205,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // which view am i? find index in array
         Point ix = new Point();
+        int x = -1;
+        int y = -1;
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
 
-                if (board[i][j].ImageId == v.getId()) {
+                if (board[i][j].getImageId() == v.getId()) {
                     ix.addCoordinates(i, j);
+                    x = i;
+                    y = j;
                     break;
                 }
             }
         }
 
         // clicked on something other than game board
-        if (ix.X == -1 && ix.Y == -1) return;
+        if (x == -1 && y == -1) return;
 
         Move lm = new Move();
-        lm.imageView = thisImageView;
-        lastClickedIndex = ix;
+        lm.setImageView(thisImageView);
 
-        if (board[ix.X][ix.Y].Color == 0) {
+        if (board[x][y].getColor() == 0) {
             if (isBlacksMove == true) {
-                tileViews[ix.X][ix.Y].setImageResource(R.drawable.ic_fiber_manual_record_black_48dp);
-                board[ix.X][ix.Y].setTakeState(1);
+                tileViews[x][y].setImageResource(R.drawable.ic_fiber_manual_record_black_48dp);
+                board[x][y].setTakeState(1);
             } else {
-                tileViews[ix.X][ix.Y].setImageResource(R.drawable.ic_panorama_fish_eye_black_48dp);
-                board[ix.X][ix.Y].setTakeState(2);
+                tileViews[x][y].setImageResource(R.drawable.ic_panorama_fish_eye_black_48dp);
+                board[x][y].setTakeState(2);
             }
 
-            lm.point = board[ix.X][ix.Y];
+            lm.setPoint(board[x][y]);
             lastMove = lm;
-            DidPointCauseCaptureAsyncTask didPointCauseCaptureAsyncTask = new DidPointCauseCaptureAsyncTask(board[ix.X][ix.Y], board);
+            DidPointCauseCaptureAsyncTask didPointCauseCaptureAsyncTask = new DidPointCauseCaptureAsyncTask(board[x][y], board);
             didPointCauseCaptureAsyncTask.execute();
 
             isBlacksMove = !isBlacksMove;
@@ -277,11 +263,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
+    private void revertPoint(Point p) {
+        int x = p.getX();
+        int y = p.getY();
+        board[x][y].revertState();
+        if (board[x][y].getColor() == 1) {
+            tileViews[x][y].setImageResource(R.drawable.ic_fiber_manual_record_black_48dp);
+        } else if (board[x][y].getColor() == 2) {
+            tileViews[x][y].setImageResource(R.drawable.ic_panorama_fish_eye_black_48dp);
+        } else {
+            tileViews[x][y].setImageResource(R.drawable.ic_add_black_48dp);
+        }
+    }
 
     private void resetGame() {
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
-                if (board[i][j].Color != 0) {
+                if (board[i][j].getColor() != 0) {
                     tileViews[i][j].setImageResource(R.drawable.ic_add_black_48dp);
                 }
             }
@@ -332,11 +330,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         protected void onPostExecute(ArrayList<Point> deadPoints) {
-            lastMove.capturedPoints = deadPoints;
+            lastMove.setCapturedPoints(deadPoints);
             previousMoves.add(lastMove);
             for (Point deadPoint : deadPoints) {
-                tileViews[deadPoint.X][deadPoint.Y].setImageResource(R.drawable.ic_add_black_48dp);
-                board[deadPoint.X][deadPoint.Y].setTakeState(0);
+                int x = deadPoint.getX();
+                int y = deadPoint.getY();
+                tileViews[x][y].setImageResource(R.drawable.ic_add_black_48dp);
+                board[x][y].setTakeState(0);
                 Log.d(TAG, "DEAD");
             }
         }

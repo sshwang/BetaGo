@@ -9,8 +9,8 @@ import java.util.HashSet;
 public class LogicUtil {
     // Get the neighbors of the given node
     public static HashSet<Point> getNeighbors(Point point, Point[][] board) {
-        int x = point.X;
-        int y = point.Y;
+        int x = point.getX();
+        int y = point.getY();
         HashSet<Point> ret = new HashSet<Point>() {
         };
 
@@ -49,14 +49,14 @@ public class LogicUtil {
 
         for (Point p : nodesToCheck) {
             // means the spot is un occupied
-            if (p.Color == 0){
+            if (p.getColor() == 0){
                 continue;
             }
 
             // check if we have seen this node already
             boolean skipNode = false;
             for (Point checkedPoint : groupFound) {
-                if (checkedPoint.X == p.X && checkedPoint.Y == p.Y){
+                if (checkedPoint.getX() == p.getX() && checkedPoint.getY() == p.getY()){
                     skipNode = true;
                     break;
                 }
@@ -67,7 +67,7 @@ public class LogicUtil {
             }
 
             // keep walking the tree
-            if (p.Color == point.Color) {
+            if (p.getColor() == point.getColor()) {
                 HashSet<Point> groupies = findGroupRecursive(p, board, groupFound);
                 groupFound.addAll(groupies);
             }
@@ -79,23 +79,23 @@ public class LogicUtil {
     // Recursive function that will walk the group and return true if
     // it finds an open liberty, it will skip the nodes we have already seen
     private static boolean isAliveRecursive(Point point, Point[][] board, HashSet<Point> alreadyCheckedPoints){
-        int x = point.X;
-        int y = point.Y;
-        int color = point.Color;
+        int x = point.getX();
+        int y = point.getY();
+        int color = point.getColor();
 
         HashSet<Point> nodesToCheck = getNeighbors(point, board);
 
         alreadyCheckedPoints.add(point);
         for (Point p : nodesToCheck) {
             // means the spot is un occupied
-            if (p.Color == 0){
+            if (p.getColor() == 0){
                 return  true;
             }
 
             // check if we have seen this node already
             boolean skipNode = false;
             for (Point checkedPoint : alreadyCheckedPoints) {
-                if (checkedPoint.X == p.X && checkedPoint.Y == p.Y){
+                if (checkedPoint.getX() == p.getX() && checkedPoint.getY() == p.getY()){
                     skipNode = true;
                     break;
                 }
@@ -105,7 +105,7 @@ public class LogicUtil {
                 continue;
             }
 
-            if (p.Color == color) {
+            if (p.getColor() == color) {
                 if (isAliveRecursive(p, board, alreadyCheckedPoints)) {
                     return true;
                 }

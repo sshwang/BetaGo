@@ -1,5 +1,7 @@
 package com.somestupidappproject.betago;
 
+import android.util.Pair;
+
 import java.util.ArrayList;
 
 /**
@@ -7,16 +9,19 @@ import java.util.ArrayList;
  */
 
 public class Point {
-    public int X;
-    public int Y;
-    public int ImageId;
+    // should we replace these with tuples or pairs?
+    // fewer getters/setters
+    private int X;
+    private int Y;
+    private Pair<Integer, Integer> coordinates;
+    private int ImageId;
 
     // 0 is untaken
     // 1 is black
     // 2 is white
-    public int Color = 0;
+    private int Color = 0;
 
-    public ArrayList<Integer> previousStates;
+    private ArrayList<Integer> previousStates;
 
     // defaults to -1,-1
     public Point() {
@@ -26,7 +31,7 @@ public class Point {
     public Point(int x, int y) {
         this.X = x;
         this.Y = y;
-        this.previousStates = new ArrayList<Integer>();
+        this.previousStates = new ArrayList<>();
     }
 
     public void addCoordinates(int x, int y) {
@@ -52,6 +57,21 @@ public class Point {
             this.Color = this.previousStates.get(size-1);
             this.previousStates.remove(size-1);
         }
+    }
 
+    public int getColor() {
+        return Color;
+    }
+
+    public int getImageId() {
+        return ImageId;
+    }
+
+    public int getX() {
+        return X;
+    }
+
+    public int getY() {
+        return Y;
     }
 }
