@@ -250,11 +250,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             HashSet<Point> neighbors = destroyer.getNeighbors(board[ix.X][ix.Y], board);
             for (Point neighbor : neighbors){
-                if (destroyer.isDead(neighbor, board)){
-                    tileViews[neighbor.X][neighbor.Y].setImageResource(R.drawable.ic_add_black_48dp);
-                    board[neighbor.X][neighbor.Y].setTakeState(0);
-                    Log.d(TAG, "DEAD");
-                    capturedTiles.add(neighbor);
+                if (!destroyer.isAlive(neighbor, board)){
+                    // Point is dead which means it's group is also dead
+                    // Find the group here
+                    HashSet<Point> group = destroyer.findGroup(neighbor, board);
+                    group.add(neighbor);
+
+                    // Set the neighbor and its group to an empty state
+                    for (Point p : group) {
+                        tileViews[p.X][p.Y].setImageResource(R.drawable.ic_add_black_48dp);
+                        board[p.X][p.Y].setTakeState(0);
+                        capturedTiles.add(p);
+                    }
                 }
             }
 
