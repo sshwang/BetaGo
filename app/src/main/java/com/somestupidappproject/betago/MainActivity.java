@@ -10,9 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -21,7 +19,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected Point[][] board = new Point[boardSize][boardSize];
 
     protected ImageView[][] tileViews = new ImageView[boardSize][boardSize];
-    private LogicUtil destroyer = new LogicUtil();
     protected boolean isBlacksMove;
     private View undoMoveButton;
     private Point lastClickedIndex;
@@ -304,7 +301,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         private Point[][] board;
         private Point point;
-        private LogicUtil destroyer = new LogicUtil();
 
         public DidPointCauseCaptureAsyncTask(Point point, Point[][] board) {
             this.point = point;
@@ -320,13 +316,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             // Get all neighbors and also check if the placed point is surrounded
-            HashSet<Point> neighbors = this.destroyer.getNeighbors(point, board);
+            HashSet<Point> neighbors = LogicUtil.getNeighbors(point, board);
 
             for (Point neighbor : neighbors) {
-                if (!destroyer.isAlive(neighbor, board)) {
+                if (!LogicUtil.isAlive(neighbor, board)){
                     // Point is dead which means it's group is also dead
                     // Find the group here
-                    HashSet<Point> group = destroyer.findGroup(neighbor, board);
+                    HashSet<Point> group = LogicUtil.findGroup(neighbor, board);
                     deadPoints.addAll(group);
                 }
             }
