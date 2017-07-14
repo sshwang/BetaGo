@@ -1,6 +1,5 @@
 package com.somestupidappproject.betago;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -40,8 +39,11 @@ public class Point {
     }
 
     public void setTakeState(int color){
-        this.previousStates.add(this.Color);
-        this.Color = color;
+        // only update the color if they are different
+        if (this.Color != color) {
+            this.previousStates.add(this.Color);
+            this.Color = color;
+        }
     }
 
     public void revertState(){
