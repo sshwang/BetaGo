@@ -1124,6 +1124,12 @@
             android:src="@drawable/ic_add_black_48dp" />
 
         <ImageView
+            android:id="@+id/point10_3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_add_black_48dp" />
+
+        <ImageView
             android:id="@+id/point10_4"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -1155,12 +1161,6 @@
 
         <ImageView
             android:id="@+id/point10_9"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_add_black_48dp" />
-
-        <ImageView
-            android:id="@+id/point10_3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/ic_add_black_48dp" />
