@@ -1,4 +1,4 @@
-package com.somestupidappproject.betago;
+package com.somestupidappproject.betago.main;
 
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -10,13 +10,20 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.somestupidappproject.betago.R;
+import com.somestupidappproject.betago.board.Board;
+import com.somestupidappproject.betago.board.Point;
+import com.somestupidappproject.betago.moves.Move;
+import com.somestupidappproject.betago.utils.BoardUtils;
+import com.somestupidappproject.betago.utils.LogicUtil;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     int boardSize = 19;
-    protected Point[][] board = new Point[boardSize][boardSize];
+    protected Board board = new Board(boardSize);
 
     protected ImageView[][] tileViews = new ImageView[boardSize][boardSize];
     protected boolean isBlacksMove;
@@ -156,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Point point = new Point(i, j);
                 point.setImageId(imageIdsFlat[id]);
                 point.setTakeState(0);
-                board[i][j] = point;
+                board.setPoint(i,j,point);
 
                 // setting up click listeners
                 tileViews[i][j] = (ImageView) findViewById(imageIdsFlat[id]);
@@ -215,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
 
-                if (board[i][j].getImageId() == v.getId()) {
+                if (board.getPoint(i,j).getImageId() == v.getId()) {
                     ix.addCoordinates(i, j);
                     x = i;
                     y = j;
@@ -230,18 +237,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Move lm = new Move();
         lm.setImageView(thisImageView);
 
-        if (board[x][y].getColor() == 0) {
+        if (board.getPoint(x,y).getColor() == 0) {
             if (isBlacksMove == true) {
                 tileViews[x][y].setImageResource(R.drawable.ic_fiber_manual_record_black_48dp);
-                board[x][y].setTakeState(1);
+                board.getPoint(x,y).setTakeState(1);
             } else {
                 tileViews[x][y].setImageResource(R.drawable.ic_panorama_fish_eye_black_48dp);
-                board[x][y].setTakeState(2);
+                board.getPoint(x,y).setTakeState(2);
             }
 
-            lm.setPoint(board[x][y]);
+            lm.setPoint(board.getPoint(x,y));
             lastMove = lm;
-            DidPointCauseCaptureAsyncTask didPointCauseCaptureAsyncTask = new DidPointCauseCaptureAsyncTask(board[x][y], board);
+            DidPointCauseCaptureAsyncTask didPointCauseCaptureAsyncTask = new DidPointCauseCaptureAsyncTask(board.getPoint(x, y), board);
             didPointCauseCaptureAsyncTask.execute();
 
             isBlacksMove = !isBlacksMove;
@@ -271,10 +278,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void revertPoint(Point p) {
         int x = p.getX();
         int y = p.getY();
-        board[x][y].revertState();
-        if (board[x][y].getColor() == 1) {
+        board.getPoint(x,y).revertState();
+        if (board.getPoint(x,y).getColor() == 1) {
             tileViews[x][y].setImageResource(R.drawable.ic_fiber_manual_record_black_48dp);
-        } else if (board[x][y].getColor() == 2) {
+        } else if (board.getPoint(x,y).getColor() == 2) {
             tileViews[x][y].setImageResource(R.drawable.ic_panorama_fish_eye_black_48dp);
         } else {
             tileViews[x][y].setImageResource(R.drawable.ic_add_black_48dp);
@@ -284,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void resetGame() {
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
-                if (board[i][j].getColor() != 0) {
+                if (board.getPoint(i,j).getColor() != 0) {
                     tileViews[i][j].setImageResource(R.drawable.ic_add_black_48dp);
                 }
             }
@@ -292,7 +299,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
                 Point point = new Point(i, j);
-                board[i][j] = point;
+                board.setPoint(i,j,point);
             }
         }
 
@@ -302,10 +309,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     class DidPointCauseCaptureAsyncTask extends AsyncTask<Void, Void, ArrayList<Point>> {
 
-        private Point[][] board;
+        private Board board;
         private Point point;
 
-        public DidPointCauseCaptureAsyncTask(Point point, Point[][] board) {
+        public DidPointCauseCaptureAsyncTask(Point point, Board board) {
             this.point = point;
             this.board = board;
         }
@@ -319,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             // Get all neighbors and also check if the placed point is surrounded
-            HashSet<Point> neighbors = LogicUtil.getNeighbors(point, board);
+            HashSet<Point> neighbors = BoardUtils.getNeighbors(point, board);
 
             for (Point neighbor : neighbors) {
                 if (!LogicUtil.isAlive(neighbor, board)){
@@ -342,7 +349,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 int x = deadPoint.getX();
                 int y = deadPoint.getY();
                 tileViews[x][y].setImageResource(R.drawable.ic_add_black_48dp);
-                board[x][y].setTakeState(0);
+                board.getPoint(x,y).setTakeState(0);
                 Log.d(TAG, "DEAD");
             }
         }
