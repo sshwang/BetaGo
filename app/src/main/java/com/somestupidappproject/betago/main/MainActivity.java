@@ -19,21 +19,31 @@ import com.somestupidappproject.betago.utils.BoardUtils;
 import com.somestupidappproject.betago.utils.LogicUtil;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    //Logging stuff
     private static final String TAG = "betago.MainActivity";
+
+    //Game instantiation stuff
     //TODO create different sized boards and create a factory to instantiate them based on user input
     protected Board board = new LargeBoard();
     int boardSize = board.getBoardSize();
 
+    //Image rendering stuff
     protected ImageView[][] tileViews = new ImageView[boardSize][boardSize];
-    protected boolean isBlacksMove;
     private View undoMoveButton;
-    private ArrayList<Move> previousMoves;
     private TextView whoseMoveTextView;
+
+    //gameplay stuff
     private Move lastMove;
+    private ArrayList<Move> previousMoves;
+    protected boolean isBlacksMove;
+
+    //game statistic stuff
+    private int whiteCaptures = 0;
+    private int blackCaptures = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +104,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         undoMoveButton.setEnabled(false);
-
-
     }
 
     @Override
@@ -215,13 +223,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             // Get all neighbors and also check if the placed point is surrounded
-            HashSet<Point> neighbors = BoardUtils.getNeighbors(point, board);
+            Set<Point> neighbors = BoardUtils.getNeighbors(point, board);
 
             for (Point neighbor : neighbors) {
                 if (!LogicUtil.isAlive(neighbor, board)){
                     // Point is dead which means it's group is also dead
                     // Find the group here
-                    HashSet<Point> group = LogicUtil.findGroup(neighbor, board);
+                    Set<Point> group = LogicUtil.findGroup(neighbor, board);
                     deadPoints.addAll(group);
                 }
             }

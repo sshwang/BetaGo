@@ -26,12 +26,12 @@ public class LogicUtil {
 
     // Function that will return the group of nodes of the same color
     // touching the node given
-    public static HashSet<Point> findGroup(Point point, Board board) {
+    public static Set<Point> findGroup(Point point, Board board) {
         return findGroupRecursive(point, board, new HashSet<Point>(){});
     }
 
-    private static HashSet<Point> findGroupRecursive(Point point, Board board, HashSet<Point> groupFound) {
-        HashSet<Point> nodesToCheck = BoardUtils.getNeighbors(point, board);
+    private static Set<Point> findGroupRecursive(Point point, Board board, HashSet<Point> groupFound) {
+        Set<Point> nodesToCheck = BoardUtils.getNeighbors(point, board);
         groupFound.add(point);
 
         for (Point p : nodesToCheck) {
@@ -55,7 +55,7 @@ public class LogicUtil {
 
             // keep walking the tree
             if (p.getColor() == point.getColor()) {
-                HashSet<Point> groupies = findGroupRecursive(p, board, groupFound);
+                Set<Point> groupies = findGroupRecursive(p, board, groupFound);
                 groupFound.addAll(groupies);
             }
         }
@@ -70,7 +70,7 @@ public class LogicUtil {
         int y = point.getY();
         int color = point.getColor();
 
-        HashSet<Point> nodesToCheck = BoardUtils.getNeighbors(point, board);
+        Set<Point> nodesToCheck = BoardUtils.getNeighbors(point, board);
 
         alreadyCheckedPoints.add(point);
         for (Point p : nodesToCheck) {
@@ -108,7 +108,7 @@ public class LogicUtil {
     //returns 1 if black owns the territory
     //returns 2 if white owns the territory
     public static int getTerritoryOwner(Board board,
-                                  Point point) {
+                                        Point point) {
         if (point.getColor() == 1 || point.getColor() == 2) {
             return 0;
         }
@@ -133,14 +133,14 @@ public class LogicUtil {
 
     //given a point, determines if the point is owned by a color.
     //returns false if the point is a color (black or white)
-    public static void isTerritoryOwnedRecursive(Point point,
+    private static void isTerritoryOwnedRecursive(Point point,
                                                  Board board,
                                                  Set<Point> alreadyCheckedPoints,
                                                  Map<Integer, Boolean> foundPlayer) {
         boolean foundWhitePiece = false;
         boolean foundBlackPiece = false;
 
-        HashSet<Point> nodesToCheck = BoardUtils.getNeighbors(point, board);
+        Set<Point> nodesToCheck = BoardUtils.getNeighbors(point, board);
         alreadyCheckedPoints.add(point);
 
         for (Point p : nodesToCheck) {
