@@ -4,7 +4,7 @@ package com.somestupidappproject.betago.board;
  * Created by sapatel on 7/15/2017.
  */
 
-public class Board {
+abstract public class Board {
     private Point[][] board;
     private int boardSize;
 
@@ -24,4 +24,7 @@ public class Board {
     public int getBoardSize() {
         return boardSize;
     }
+
+    abstract public int[] getImageIds();
+    abstract public int getBoardLayout();
 }
