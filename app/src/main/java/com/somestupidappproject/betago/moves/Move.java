@@ -1,6 +1,8 @@
-package com.somestupidappproject.betago;
+package com.somestupidappproject.betago.moves;
 
 import android.widget.ImageView;
+
+import com.somestupidappproject.betago.board.Point;
 
 import java.util.ArrayList;
 
