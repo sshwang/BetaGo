@@ -85,8 +85,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (previousMoves.size() > 0) {
 
                     Move m = previousMoves.get(previousMoves.size() - 1);
-                    m.getPoint().revertState();
-                    m.getImageView().setImageResource(R.drawable.ic_add_black_48dp);
 
                     revertPoint(m.getPoint());
                     for (Point p :m.getCapturedPoints()) {
@@ -129,10 +127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         // clicked on something other than game board
-        if (x == -1 && y == -1) return;
-
-        Move lm = new Move();
-        lm.setImageView(thisImageView);
+        if (x == -1 || y == -1) return;
 
         if (board.getPoint(x,y).getColor() == 0) {
             if (isBlacksMove == true) {
@@ -143,8 +138,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 board.getPoint(x,y).setTakeState(2);
             }
 
-            lm.setPoint(board.getPoint(x,y));
-            lastMove = lm;
             DidPointCauseCaptureAsyncTask didPointCauseCaptureAsyncTask = new DidPointCauseCaptureAsyncTask(board.getPoint(x, y), board);
             didPointCauseCaptureAsyncTask.execute();
 
@@ -239,6 +232,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         protected void onPostExecute(ArrayList<Point> deadPoints) {
+            lastMove = new Move();
+            lastMove.setPoint(this.point);
             lastMove.setCapturedPoints(deadPoints);
             previousMoves.add(lastMove);
             undoMoveButton.setEnabled(true);
