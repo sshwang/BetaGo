@@ -59,6 +59,11 @@ public class Point {
         }
     }
 
+    public void resetPointOnBoard() {
+        this.Color = 0;
+        this.previousStates.clear();
+    }
+
     public int getColor() {
         return Color;
     }
