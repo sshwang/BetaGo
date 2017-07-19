@@ -183,8 +183,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             for (int j = 0; j < boardSize; j++) {
                 if (board.getPoint(i,j).getColor() != 0) {
                     tileViews[i][j].setImageResource(R.drawable.ic_add_black_48dp);
-                    board.getPoint(i,j).resetPointOnBoard();
                 }
+                board.getPoint(i,j).resetPointOnBoard();
             }
         }
         undoMoveButton.setEnabled(false);
