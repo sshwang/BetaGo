@@ -1,7 +1,5 @@
 package com.somestupidappproject.betago.moves;
 
-import android.widget.ImageView;
-
 import com.somestupidappproject.betago.board.Stone;
 
 import java.util.ArrayList;
@@ -14,7 +12,6 @@ public class Move {
 
     private Stone stone;
     private ArrayList<Stone> capturedStones = new ArrayList<Stone>();
-    private ImageView imageView;
 
     public Move(Stone stone) {
         this.stone = stone;
@@ -40,13 +37,4 @@ public class Move {
     public void setCapturedStones(ArrayList<Stone> capturedStones) {
         this.capturedStones = capturedStones;
     }
-
-    public ImageView getImageView() {
-        return imageView;
-    }
-
-    public void setImageView(ImageView imageView) {
-        this.imageView = imageView;
-    }
-
 }
