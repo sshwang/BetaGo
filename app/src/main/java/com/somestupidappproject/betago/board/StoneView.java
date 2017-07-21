@@ -16,6 +16,6 @@ public class StoneView extends View {
         if (color == Stone.BLACK)
             setBackgroundResource(R.drawable.ic_fiber_manual_record_black_48dp);
         else
-            setBackgroundResource(R.drawable.ic_panorama_fish_eye_black_48dp);
+            setBackgroundResource(R.drawable.ic_fiber_manual_record_white_48dp);
     }
 }
