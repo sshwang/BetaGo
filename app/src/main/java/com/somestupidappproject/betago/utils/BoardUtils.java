@@ -46,7 +46,7 @@ public class BoardUtils {
         int color = isBlacksMove ? 1 : 2;
 
         // Check if stone is already occupied
-        if (board.getStone(stone.getX(), stone.getY()).getColor() != 0) {
+        if (board.getStone(stone.getX(), stone.getY()).getColor() != Stone.UNTAKEN) {
             return false;
         }
 
