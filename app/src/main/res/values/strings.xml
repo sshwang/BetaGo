@@ -2,4 +2,5 @@
     <string name="app_name">BetaGo</string>
     <string name="clearBoard">Clear Board</string>
     <string name="undoMoveButton">Undo Move</string>
+    <string name="resizeBoard">Resize Board</string>
 </resources>
