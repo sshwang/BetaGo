@@ -11,8 +11,6 @@ import com.somestupidappproject.betago.R;
 
 public class StoneView extends View {
 
-    public Point point;
-
     public StoneView(Context context, int color) {
         super(context);
         if (color == Stone.BLACK)
