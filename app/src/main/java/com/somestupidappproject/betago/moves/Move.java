@@ -2,7 +2,7 @@ package com.somestupidappproject.betago.moves;
 
 import android.widget.ImageView;
 
-import com.somestupidappproject.betago.board.Point;
+import com.somestupidappproject.betago.board.Stone;
 
 import java.util.ArrayList;
 
@@ -12,27 +12,33 @@ import java.util.ArrayList;
 
 public class Move {
 
-    private Point point;
-    private ArrayList<Point> capturedPoints;
+    private Stone stone;
+    private ArrayList<Stone> capturedStones = new ArrayList<Stone>();
     private ImageView imageView;
 
-    public Move() {
+    public Move(Stone stone) {
+        this.stone = stone;
     }
 
-    public Point getPoint() {
-        return point;
+    public Move (Stone stone, ArrayList<Stone> capturedStones) {
+        this(stone);
+        this.capturedStones = capturedStones;
     }
 
-    public void setPoint(Point point) {
-        this.point = point;
+    public Stone getStone() {
+        return stone;
     }
 
-    public ArrayList<Point> getCapturedPoints() {
-        return capturedPoints;
+    public void setStone(Stone stone) {
+        this.stone = stone;
     }
 
-    public void setCapturedPoints(ArrayList<Point> capturedPoints) {
-        this.capturedPoints = capturedPoints;
+    public ArrayList<Stone> getCapturedStones() {
+        return capturedStones;
+    }
+
+    public void setCapturedStones(ArrayList<Stone> capturedStones) {
+        this.capturedStones = capturedStones;
     }
 
     public ImageView getImageView() {

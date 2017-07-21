@@ -1,7 +1,7 @@
 package com.somestupidappproject.betago.utils;
 
 import com.somestupidappproject.betago.board.Board;
-import com.somestupidappproject.betago.board.Point;
+import com.somestupidappproject.betago.board.Stone;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,23 +14,23 @@ public class BoardUtils {
     private static final String TAG = "betago.EndGameUtils";
 
     // Get the neighbors of the given node
-    public static Set<Point> getNeighbors(Point point, Board board) {
-        int x = point.getX();
-        int y = point.getY();
-        Set<Point> ret = new HashSet<Point>() {
+    public static Set<Stone> getNeighbors(Stone stone, Board board) {
+        int x = stone.getX();
+        int y = stone.getY();
+        Set<Stone> ret = new HashSet<Stone>() {
         };
 
         if ( y + 1 < board.getBoardSize() ){
-            ret.add(board.getPoint(x, y + 1));
+            ret.add(board.getStone(x, y + 1));
         }
         if (y - 1 > -1) {
-            ret.add(board.getPoint(x, y - 1));
+            ret.add(board.getStone(x, y - 1));
         }
         if (x + 1 < board.getBoardSize()) {
-            ret.add(board.getPoint(x + 1, y));
+            ret.add(board.getStone(x + 1, y));
         }
         if (x - 1 > -1) {
-            ret.add(board.getPoint(x - 1, y));
+            ret.add(board.getStone(x - 1, y));
         }
 
         return ret;

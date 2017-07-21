@@ -23,8 +23,8 @@ public class EndGameUtils {
 
         for (int i = 0; i < board.getBoardSize(); i++) {
             for (int j = 0; j < board.getBoardSize(); j++) {
-                if (board.getPoint(i, j).getColor() == 0) {
-                    int territoryOwner = LogicUtil.getTerritoryOwner(board, board.getPoint(i, j));
+                if (board.getStone(i, j).getColor() == 0) {
+                    int territoryOwner = LogicUtil.getTerritoryOwner(board, board.getStone(i, j));
                     if (territoryOwner == 1) {
                         blackScore++;
                     } else if (territoryOwner == 2) {
