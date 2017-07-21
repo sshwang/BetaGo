@@ -58,5 +58,31 @@ public class BoardUtils {
         return true;
     }
 
+    private static boolean isSuicideMove(Stone stone, Board board, int color) {
+        // if any neighbors are going to die then it is a valid move
+        Set<Stone> neighbors = BoardUtils.getNeighbors(stone, board);
+
+        // Because we haven't already gone we need to exclude the current point from our search
+        HashSet<Stone> stonesNotChecked = new HashSet<Stone>() {{ add(stone); }};
+
+        for (Stone neighbor : neighbors) {
+            // if your neighbor is your color and is alive, then it is not a suicide move
+            if (neighbor.getColor() == color && LogicUtil.isAlive(neighbor, board, stonesNotChecked)){
+                return false;
+            }
+            // if your neighbor is not your color and dead then it is not a suicide move
+            else if (neighbor.getColor() != color && !LogicUtil.isAlive(neighbor, board, stonesNotChecked )){
+                return false;
+            }
+        }
+
+        //now check if adding the stone will kill the group it is in
+        if (!LogicUtil.isAlive(stone, board)) {
+            return true;
+        }
+
+        return false;
+    }
+
 
 }

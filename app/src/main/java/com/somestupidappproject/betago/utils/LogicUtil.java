@@ -24,6 +24,12 @@ public class LogicUtil {
         return isAliveRecursive(Stone, board, new HashSet<Stone>(){});
     }
 
+    public static boolean isAlive(Stone stone, Board board, HashSet<Stone> stonesNotToCheck) {
+        // create a new hashset so we don't mess with the callers set
+        HashSet<Stone> stonesNotToCheckCopy = new HashSet<Stone>() {{ addAll(stonesNotToCheck); }};
+        return isAliveRecursive(stone, board, stonesNotToCheckCopy);
+    }
+
     // Function that will return the group of nodes of the same color
     // touching the node given
     public static Set<Stone> findGroup(Stone Stone, Board board) {
@@ -35,10 +41,6 @@ public class LogicUtil {
         groupFound.add(Stone);
 
         for (Stone s : nodesToCheck) {
-            // means the spot is un occupied
-            if (s.getColor() == 0){
-                continue;
-            }
 
             // check if we have seen this node already
             boolean skipNode = false;
@@ -50,6 +52,11 @@ public class LogicUtil {
             }
 
             if (skipNode) {
+                continue;
+            }
+
+            // means the spot is un occupied
+            if (s == null){
                 continue;
             }
 
