@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
-import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -14,8 +13,6 @@ import com.somestupidappproject.betago.R;
 import com.somestupidappproject.betago.game.Game;
 import com.somestupidappproject.betago.main.MainActivity;
 
-import java.util.ArrayList;
-
 /**
  * Created by evansapienza on 7/19/17.
  */
@@ -23,32 +20,31 @@ import java.util.ArrayList;
 public class BoardView extends RelativeLayout implements View.OnTouchListener {
 
     private static final String TAG = BoardView.class.getName();
-    private static final int stonePixelWidth = 96;
 
-    Paint paint = new Paint();
-
-    public int boardSize;
-    public int maxSquareSize;
-    public int padding = 100;
-    public int interval;
+    private int boardSize;
+    private int maxSquareSize;
+    private int padding;
+    private int stonePixelWidth;
+    private Paint paint = new Paint();
+    private float strokeWidth = 5f;
+    private int interval;
     public Point[][] boardCoords;
-    private ArrayList<Pair<View,Point>> renderedStones = new ArrayList<Pair<View,Point>>();
     private Game game;
     private Board board;
     private MainActivity main;
 
-    public float strokeWidth = 5f;
-
     private void init(Board board, int maxSquareSize) {
-        paint.setColor(Color.BLACK);
 
+        this.boardSize = board.getBoardSize();
+        this.maxSquareSize = maxSquareSize;
+
+        setupScale();
+
+        paint.setColor(Color.BLACK);
         paint.setStrokeWidth(strokeWidth);
 
         this.setOnTouchListener(this);
 
-        this.boardSize = board.getBoardSize();
-        this.maxSquareSize = maxSquareSize;
-//        this.interval = Math.round((maxSquareSize - (this.strokeWidth * (this.boardSize - 1))) / (this.boardSize - 1));
         this.interval = (maxSquareSize - (padding * 2)) / (this.boardSize - 1);
 
         // Setup coordinate system
@@ -84,7 +80,6 @@ public class BoardView extends RelativeLayout implements View.OnTouchListener {
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(stonePixelWidth, stonePixelWidth);
         layoutParams.leftMargin = point.getX() - stonePixelWidth / 2;
         layoutParams.topMargin = point.getY() - stonePixelWidth /2;
-        this.renderedStones.add(new Pair(stoneView, point));
         this.addView(stoneView, layoutParams);
     }
 
@@ -180,5 +175,11 @@ public class BoardView extends RelativeLayout implements View.OnTouchListener {
 
     private Point boardIndexToCoords(Point boardIndex) {
         return new Point(boardIndex.getX() * interval + padding, boardIndex.getY() * interval + padding);
+    }
+
+    private void setupScale() {
+        double width = (double) maxSquareSize;
+        this.padding = (int) Math.round((double) maxSquareSize * 0.05);
+        this.stonePixelWidth = (int) (width - (padding * 2)) / boardSize;
     }
 }
