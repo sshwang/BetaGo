@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.resizeBoard) {
             AlertDialog.Builder b = new AlertDialog.Builder(this);
             b.setTitle("Example");
-            String[] types = {"4", "9", "12", "19"};
+            String[] types = {"4", "9", "13", "19"};
             b.setItems(types, new DialogInterface.OnClickListener() {
 
                 @Override
