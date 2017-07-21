@@ -45,15 +45,15 @@ public class BoardUtils {
         // convert the boolean into an int
         int color = isBlacksMove ? 1 : 2;
 
-        // Check if point is already occupied
-        if (board.getStone(stone.getX(), stone.getY()) != null) {
+        // Check if stone is already occupied
+        if (board.getStone(stone.getX(), stone.getY()).getColor() != 0) {
             return false;
         }
 
-//        // check for suicide move,
-//        if (BoardUtils.isSuicideMove(stone, board, color)) {
-//            return false;
-//        }
+        // check for suicide move,
+        if (BoardUtils.isSuicideMove(stone, board, color)) {
+            return false;
+        }
 
         return true;
     }
@@ -62,7 +62,7 @@ public class BoardUtils {
         // if any neighbors are going to die then it is a valid move
         Set<Stone> neighbors = BoardUtils.getNeighbors(stone, board);
 
-        // Because we haven't already gone we need to exclude the current point from our search
+        // Because we haven't already gone we need to exclude the current stone from our search
         HashSet<Stone> stonesNotChecked = new HashSet<Stone>() {{ add(stone); }};
 
         for (Stone neighbor : neighbors) {
@@ -83,6 +83,4 @@ public class BoardUtils {
 
         return false;
     }
-
-
 }

@@ -93,7 +93,7 @@ public class BoardView extends RelativeLayout implements View.OnTouchListener {
         for (int i = 0; i < board.getBoardSize(); i++) {
             for (int j = 0; j < board.getBoardSize(); j++) {
                 Stone s = board.getStone(i, j);
-                if (s != null) {
+                if (s.getColor() != Stone.UNTAKEN) {
                     renderStone(boardIndexToCoords(s), s.getColor());
                 }
             }
@@ -132,6 +132,8 @@ public class BoardView extends RelativeLayout implements View.OnTouchListener {
                 main.updateMoveText();
                 if (game.previousMoves.size() > 0)
                     main.setUndoButton(true);
+            } else {
+                main.updateMoveTextInvalid();
             }
         }
         return true;

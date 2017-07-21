@@ -75,6 +75,11 @@ public class MainActivity extends AppCompatActivity {
         whoseMoveTextView.setText(whoseMoveText);
     }
 
+    public void updateMoveTextInvalid() {
+        String errorText = game.isBlacksMove ? "Invalid Move: Black's Turn" : "Invalid Move: White's Turn";
+        whoseMoveTextView.setText(errorText);
+    }
+
     public void setUndoButton(boolean enabled) {
         undoMoveButton.setEnabled(enabled);
     }

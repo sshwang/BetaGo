@@ -17,11 +17,11 @@ import java.util.Set;
 public class LogicUtil {
     private static final String TAG = "betago.LogicUtil";
 
-    // Parameters: a Stone, the board
+    // Parameters: a stone, the board
     // Returns: whether or not the node is dead
-    // if there is no node on that Stone method return false
-    public static boolean isAlive( Stone Stone, Board board ){
-        return isAliveRecursive(Stone, board, new HashSet<Stone>(){});
+    // if there is no node on that stone method return false
+    public static boolean isAlive( Stone stone, Board board ){
+        return isAliveRecursive(stone, board, new HashSet<Stone>(){});
     }
 
     public static boolean isAlive(Stone stone, Board board, HashSet<Stone> stonesNotToCheck) {
@@ -32,20 +32,24 @@ public class LogicUtil {
 
     // Function that will return the group of nodes of the same color
     // touching the node given
-    public static Set<Stone> findGroup(Stone Stone, Board board) {
-        return findGroupRecursive(Stone, board, new HashSet<Stone>(){});
+    public static Set<Stone> findGroup(Stone stone, Board board) {
+        return findGroupRecursive(stone, board, new HashSet<Stone>(){});
     }
 
-    private static Set<Stone> findGroupRecursive(Stone Stone, Board board, HashSet<Stone> groupFound) {
-        Set<Stone> nodesToCheck = BoardUtils.getNeighbors(Stone, board);
-        groupFound.add(Stone);
+    private static Set<Stone> findGroupRecursive(Stone stone, Board board, HashSet<Stone> groupFound) {
+        Set<Stone> nodesToCheck = BoardUtils.getNeighbors(stone, board);
+        groupFound.add(stone);
 
         for (Stone s : nodesToCheck) {
+            // means the spot is un occupied
+            if (s.getColor() == 0){
+                continue;
+            }
 
             // check if we have seen this node already
             boolean skipNode = false;
-            for (Stone checkedStone : groupFound) {
-                if (checkedStone.getX() == s.getX() && checkedStone.getY() == s.getY()){
+            for (Stone checkedPoint : groupFound) {
+                if (checkedPoint.getX() == s.getX() && checkedPoint.getY() == s.getY()){
                     skipNode = true;
                     break;
                 }
@@ -55,13 +59,8 @@ public class LogicUtil {
                 continue;
             }
 
-            // means the spot is un occupied
-            if (s == null){
-                continue;
-            }
-
             // keep walking the tree
-            if (s.getColor() == Stone.getColor()) {
+            if (s.getColor() == stone.getColor()) {
                 Set<Stone> groupies = findGroupRecursive(s, board, groupFound);
                 groupFound.addAll(groupies);
             }
@@ -72,23 +71,19 @@ public class LogicUtil {
 
     // Recursive function that will walk the group and return true if
     // it finds an open liberty, it will skip the nodes we have already seen
-    private static boolean isAliveRecursive(Stone Stone, Board board, HashSet<Stone> alreadyCheckedStones){
-        int x = Stone.getX();
-        int y = Stone.getY();
+    private static boolean isAliveRecursive(Stone stone, Board board, HashSet<Stone> alreadyCheckedPoints){
+        int x = stone.getX();
+        int y = stone.getY();
+        int color = stone.getColor();
 
-        Set<Stone> nodesToCheck = BoardUtils.getNeighbors(Stone, board);
+        Set<Stone> nodesToCheck = BoardUtils.getNeighbors(stone, board);
 
-        alreadyCheckedStones.add(Stone);
+        alreadyCheckedPoints.add(stone);
         for (Stone s : nodesToCheck) {
-            // means the spot is un occupied
-            if (s == null){
-                return  true;
-            }
-
-            // check if we have seen this node already
+            // check if we want to not include this node
             boolean skipNode = false;
-            for (Stone checkedStone : alreadyCheckedStones) {
-                if (checkedStone.getX() == s.getX() && checkedStone.getY() == s.getY()){
+            for (Stone checkedPoint : alreadyCheckedPoints) {
+                if (checkedPoint.getX() == s.getX() && checkedPoint.getY() == s.getY()){
                     skipNode = true;
                     break;
                 }
@@ -98,29 +93,36 @@ public class LogicUtil {
                 continue;
             }
 
-            if (isAliveRecursive(s, board, alreadyCheckedStones)) {
-                return true;
+            // means the spot is un occupied
+            if (s.getColor() == 0){
+                return  true;
+            }
+
+            if (s.getColor() == color) {
+                if (isAliveRecursive(s, board, alreadyCheckedPoints)) {
+                    return true;
+                }
             }
         }
 
         return false;
     }
 
-    //given a Stone and a board, returns the owner of the territory associated with that Stone
-    //returns 0 if the Stone is already taken by a player
+    //given a stone and a board, returns the owner of the territory associated with that stone
+    //returns 0 if the stone is already taken by a player
     //returns 0 if the territory is contested
     //returns 1 if black owns the territory
     //returns 2 if white owns the territory
     public static int getTerritoryOwner(Board board,
-                                        Stone Stone) {
-        if (Stone.getColor() == Stone.BLACK || Stone.getColor() == Stone.WHITE) {
+                                        Stone stone) {
+        if (stone.getColor() == 1 || stone.getColor() == 2) {
             return 0;
         }
 
         Map<Integer, Boolean> foundPlayer = new HashMap<>();
         foundPlayer.put(1, false);
         foundPlayer.put(2, false);
-        isTerritoryOwnedRecursive(Stone, board, new HashSet<Stone>(){}, foundPlayer);
+        isTerritoryOwnedRecursive(stone, board, new HashSet<Stone>(){}, foundPlayer);
         boolean blackContact = foundPlayer.get(1);
         boolean whiteContact = foundPlayer.get(2);
         if (blackContact && whiteContact) {
@@ -135,17 +137,17 @@ public class LogicUtil {
         return 0;
     }
 
-    //given a Stone, determines if the Stone is owned by a color.
-    //returns false if the Stone is a color (black or white)
-    private static void isTerritoryOwnedRecursive(Stone Stone,
-                                                 Board board,
-                                                 Set<Stone> alreadyCheckedStones,
-                                                 Map<Integer, Boolean> foundPlayer) {
+    //given a stone, determines if the stone is owned by a color.
+    //returns false if the stone is a color (black or white)
+    private static void isTerritoryOwnedRecursive(Stone stone,
+                                                  Board board,
+                                                  Set<Stone> alreadyCheckedStones,
+                                                  Map<Integer, Boolean> foundPlayer) {
         boolean foundWhitePiece = false;
         boolean foundBlackPiece = false;
 
-        Set<Stone> nodesToCheck = BoardUtils.getNeighbors(Stone, board);
-        alreadyCheckedStones.add(Stone);
+        Set<Stone> nodesToCheck = BoardUtils.getNeighbors(stone, board);
+        alreadyCheckedStones.add(stone);
 
         for (Stone s : nodesToCheck) {
             if (alreadyCheckedStones.contains(s)) {
@@ -164,5 +166,4 @@ public class LogicUtil {
 
 
 }
-
 

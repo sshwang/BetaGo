@@ -22,9 +22,9 @@ public class Board {
         board[stone.getX()][stone.getY()] = stone;
     }
 
-    public void removeStone(int i, int j) { board[i][j] = null;};
+    public void removeStone(int i, int j) { board[i][j] = new Stone(i, j, Stone.UNTAKEN); }
 
-    public void removeStone(Stone s) { board[s.getX()][s.getY()] = null;};
+    public void removeStone(Stone s) { board[s.getX()][s.getY()] = new Stone(s.getX(), s.getY(), Stone.UNTAKEN); }
 
     public int getBoardSize() {
         return boardSize;
@@ -33,7 +33,7 @@ public class Board {
     public void initializeBoard() {
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
-                board[i][j] = null;
+                board[i][j] = new Stone(i, j, Stone.UNTAKEN);
             }
         }
     }

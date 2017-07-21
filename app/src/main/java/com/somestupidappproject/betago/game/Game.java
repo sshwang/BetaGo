@@ -73,10 +73,6 @@ public class Game {
         }
     }
 
-    public boolean isValidMove(Stone stone) {
-        return board.getStone(stone.getX(), stone.getY()) == null;
-    }
-
     public int getCurrentStoneColor() {
         if (isBlacksMove) {
             return Stone.BLACK;
@@ -87,7 +83,7 @@ public class Game {
 
     private void didStoneCauseCapture(Stone stone) {
         ArrayList<Stone> deadStones = new ArrayList<>();
-        if (stone == null) {
+        if (stone.getColor() == Stone.UNTAKEN) {
             return;
         }
 
@@ -95,7 +91,7 @@ public class Game {
         Set<Stone> neighbors = BoardUtils.getNeighbors(stone, board);
 
         for (Stone neighbor : neighbors) {
-            if (neighbor != null && !LogicUtil.isAlive(neighbor, board)) {
+            if (!LogicUtil.isAlive(neighbor, board)) {
                 // Point is dead which means it's group is also dead
                 // Find the group here
                 Set<Stone> group = LogicUtil.findGroup(neighbor, board);
