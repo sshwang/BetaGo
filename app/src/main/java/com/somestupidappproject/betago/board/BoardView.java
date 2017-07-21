@@ -61,7 +61,8 @@ public class BoardView extends RelativeLayout implements View.OnTouchListener {
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.MATCH_PARENT);
         this.setLayoutParams(layoutParams);
-        this.setBackgroundColor(Color.WHITE);
+//        this.setBackgroundColor(Color.WHITE);
+        this.setBackgroundResource(R.drawable.wood_grain);
 
         this.main = (MainActivity) this.getContext();
 
