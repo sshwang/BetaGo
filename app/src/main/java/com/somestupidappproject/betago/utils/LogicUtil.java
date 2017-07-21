@@ -24,6 +24,12 @@ public class LogicUtil {
         return isAliveRecursive(point, board, new HashSet<Point>(){});
     }
 
+    public static boolean isAlive(Point point, Board board, HashSet<Point> pointsNotToCheck) {
+        // create a new hashset so we don't mess with the callers set
+        HashSet<Point> pointsNotToCheckCopy = new HashSet<Point>() {{ addAll(pointsNotToCheck); }};
+        return isAliveRecursive(point, board, pointsNotToCheckCopy);
+    }
+
     // Function that will return the group of nodes of the same color
     // touching the node given
     public static Set<Point> findGroup(Point point, Board board) {
@@ -74,12 +80,7 @@ public class LogicUtil {
 
         alreadyCheckedPoints.add(point);
         for (Point p : nodesToCheck) {
-            // means the spot is un occupied
-            if (p.getColor() == 0){
-                return  true;
-            }
-
-            // check if we have seen this node already
+            // check if we want to not include this node
             boolean skipNode = false;
             for (Point checkedPoint : alreadyCheckedPoints) {
                 if (checkedPoint.getX() == p.getX() && checkedPoint.getY() == p.getY()){
@@ -90,6 +91,11 @@ public class LogicUtil {
 
             if (skipNode) {
                 continue;
+            }
+
+            // means the spot is un occupied
+            if (p.getColor() == 0){
+                return  true;
             }
 
             if (p.getColor() == color) {

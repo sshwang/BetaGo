@@ -19,6 +19,7 @@ import com.somestupidappproject.betago.utils.BoardUtils;
 import com.somestupidappproject.betago.utils.LogicUtil;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -129,23 +130,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // clicked on something other than game board
         if (x == -1 || y == -1) return;
 
-        if (board.getPoint(x,y).getColor() == 0) {
+        Point pointChosen = board.getPoint(x,y);
+
+        if (BoardUtils.isValidMove(pointChosen, board, isBlacksMove)) {
             if (isBlacksMove == true) {
                 tileViews[x][y].setImageResource(R.drawable.ic_fiber_manual_record_black_48dp);
-                board.getPoint(x,y).setTakeState(1);
+                pointChosen.setTakeState(1);
             } else {
                 tileViews[x][y].setImageResource(R.drawable.ic_panorama_fish_eye_black_48dp);
-                board.getPoint(x,y).setTakeState(2);
+                pointChosen.setTakeState(2);
             }
 
-            DidPointCauseCaptureAsyncTask didPointCauseCaptureAsyncTask = new DidPointCauseCaptureAsyncTask(board.getPoint(x, y), board);
+            DidPointCauseCaptureAsyncTask didPointCauseCaptureAsyncTask = new DidPointCauseCaptureAsyncTask(pointChosen, board);
             didPointCauseCaptureAsyncTask.execute();
 
             isBlacksMove = !isBlacksMove;
             String whoseMoveText = isBlacksMove ? "Black's Turn" : "White's Turn";
             whoseMoveTextView.setText(whoseMoveText);
         }
-
+        else {
+            String errorText = isBlacksMove ? "Invalid Move: Black's Turn" : "Invalid Move: White's Turn";
+            whoseMoveTextView.setText(errorText);
+        }
     }
 
     @Override
