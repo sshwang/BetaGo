@@ -23,8 +23,8 @@ public class BoardView extends RelativeLayout implements View.OnTouchListener {
 
     private int boardSize;
     private int maxSquareSize;
-    private int padding = 100;
-    private int stonePixelWidth = 96;
+    private int padding;
+    private int stonePixelWidth;
     private Paint paint = new Paint();
     private float strokeWidth = 5f;
     private int interval;
@@ -35,13 +35,16 @@ public class BoardView extends RelativeLayout implements View.OnTouchListener {
 
     private void init(Board board, int maxSquareSize) {
 
+        this.boardSize = board.getBoardSize();
+        this.maxSquareSize = maxSquareSize;
+
+        setupScale();
+
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(strokeWidth);
 
         this.setOnTouchListener(this);
 
-        this.boardSize = board.getBoardSize();
-        this.maxSquareSize = maxSquareSize;
         this.interval = (maxSquareSize - (padding * 2)) / (this.boardSize - 1);
 
         // Setup coordinate system
@@ -172,5 +175,11 @@ public class BoardView extends RelativeLayout implements View.OnTouchListener {
 
     private Point boardIndexToCoords(Point boardIndex) {
         return new Point(boardIndex.getX() * interval + padding, boardIndex.getY() * interval + padding);
+    }
+
+    private void setupScale() {
+        double width = (double) maxSquareSize;
+        this.padding = (int) Math.round((double) maxSquareSize * 0.05);
+        this.stonePixelWidth = (int) (width - (padding * 2)) / boardSize;
     }
 }
