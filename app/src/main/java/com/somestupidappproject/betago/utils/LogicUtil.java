@@ -75,7 +75,6 @@ public class LogicUtil {
     private static boolean isAliveRecursive(Stone Stone, Board board, HashSet<Stone> alreadyCheckedStones){
         int x = Stone.getX();
         int y = Stone.getY();
-        int color = Stone.getColor();
 
         Set<Stone> nodesToCheck = BoardUtils.getNeighbors(Stone, board);
 
@@ -99,10 +98,8 @@ public class LogicUtil {
                 continue;
             }
 
-            if (s.getColor() == color) {
-                if (isAliveRecursive(s, board, alreadyCheckedStones)) {
-                    return true;
-                }
+            if (isAliveRecursive(s, board, alreadyCheckedStones)) {
+                return true;
             }
         }
 
