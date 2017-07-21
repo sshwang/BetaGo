@@ -36,5 +36,27 @@ public class BoardUtils {
         return ret;
     }
 
+    // Determines if the move is valid or not
+    // invalid moves included are currently
+    // 1. Suicide move aka going in a spot where the group you are adding to has no liberties
+    // 2. NOT IMPLEMENTED Ko invalid move
+    // 3. Occupying a spot that already has a piece
+    public static boolean isValidMove(Stone stone, Board board, boolean isBlacksMove) {
+        // convert the boolean into an int
+        int color = isBlacksMove ? 1 : 2;
+
+        // Check if point is already occupied
+        if (board.getStone(stone.getX(), stone.getY()) != null) {
+            return false;
+        }
+
+//        // check for suicide move,
+//        if (BoardUtils.isSuicideMove(stone, board, color)) {
+//            return false;
+//        }
+
+        return true;
+    }
+
 
 }
