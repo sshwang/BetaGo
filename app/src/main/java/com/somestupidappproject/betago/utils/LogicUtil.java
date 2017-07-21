@@ -17,6 +17,10 @@ import java.util.Set;
 public class LogicUtil {
     private static final String TAG = "betago.LogicUtil";
 
+    private static final int TERRITORY_CONTESTED = 0;
+    private static final int BLACK_TERRITORY = 1;
+    private static final int WHITE_TERRITORY = 2;
+
     // Parameters: a stone, the board
     // Returns: whether or not the node is dead
     // if there is no node on that stone method return false
@@ -42,7 +46,7 @@ public class LogicUtil {
 
         for (Stone s : nodesToCheck) {
             // means the spot is un occupied
-            if (s.getColor() == 0){
+            if (s.getColor() == Stone.UNTAKEN){
                 continue;
             }
 
@@ -94,7 +98,7 @@ public class LogicUtil {
             }
 
             // means the spot is un occupied
-            if (s.getColor() == 0){
+            if (s.getColor() == Stone.UNTAKEN){
                 return  true;
             }
 
@@ -116,7 +120,7 @@ public class LogicUtil {
     public static int getTerritoryOwner(Board board,
                                         Stone stone) {
         if (stone.getColor() == 1 || stone.getColor() == 2) {
-            return 0;
+            return TERRITORY_CONTESTED;
         }
 
         Map<Integer, Boolean> foundPlayer = new HashMap<>();
@@ -126,15 +130,15 @@ public class LogicUtil {
         boolean blackContact = foundPlayer.get(1);
         boolean whiteContact = foundPlayer.get(2);
         if (blackContact && whiteContact) {
-            return 0;
+            return TERRITORY_CONTESTED;
         } else if (blackContact && !whiteContact) {
-            return 1;
+            return BLACK_TERRITORY;
         } else if (!blackContact && whiteContact) {
-            return 2;
+            return WHITE_TERRITORY;
         } else {
             Log.d(TAG, "Territory owner could not be computed");
         }
-        return 0;
+        return TERRITORY_CONTESTED;
     }
 
     //given a stone, determines if the stone is owned by a color.
