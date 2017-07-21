@@ -8,4 +8,7 @@
         android:title="@string/clearBoard"
         app:showAsAction="ifRoom"/>
 
+    <item android:id="@+id/resizeBoard"
+        android:title="@string/resizeBoard"
+        app:showAsAction="never"/>
 </menu>

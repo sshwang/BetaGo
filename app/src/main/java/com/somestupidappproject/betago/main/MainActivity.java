@@ -1,12 +1,15 @@
 package com.somestupidappproject.betago.main;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.somestupidappproject.betago.R;
@@ -20,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getName();
 
     //Game instantiation stuff
-    Board board = new Board(9); // change board size here, 9, 13, 19.
+    Board board = new Board(19); // change board size here, 9, 13, 19.
 
     private View undoMoveButton;
     private TextView whoseMoveTextView;
@@ -95,7 +98,36 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.clearBoard) {
             resetGame();
+        } else if (id == R.id.resizeBoard) {
+            AlertDialog.Builder b = new AlertDialog.Builder(this);
+            b.setTitle("Example");
+            String[] types = {"4", "9", "13", "19"};
+            b.setItems(types, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    dialog.dismiss();
+                    switch(which){
+                        case 0:
+                            board = new Board(4);
+                            break;
+                        case 1:
+                            board = new Board(9);
+                            break;
+                        case 2:
+                            board = new Board(13);
+                            break;
+                        case 3:
+                            board = new Board(19);
+                            break;
+                    }
+                    resetGame();
+                }
+            });
+            b.show();
         }
+
 
         return super.onOptionsItemSelected(item);
     }
