@@ -179,7 +179,8 @@ public class BoardView extends RelativeLayout implements View.OnTouchListener {
 
     private void setupScale() {
         double width = (double) maxSquareSize;
-        this.padding = (int) Math.round((double) maxSquareSize * 0.05);
-        this.stonePixelWidth = (int) (width - (padding * 2)) / boardSize;
+        int buffer = (int) Math.round((double) maxSquareSize * 0.05);
+        this.stonePixelWidth = (int) (width - (buffer * 2)) / boardSize;
+        this.padding = buffer + (stonePixelWidth / 2);
     }
 }
