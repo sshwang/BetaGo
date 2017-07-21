@@ -14,7 +14,6 @@ import com.somestupidappproject.betago.board.Board;
 import com.somestupidappproject.betago.board.BoardView;
 import com.somestupidappproject.betago.game.Game;
 
-
 public class MainActivity extends AppCompatActivity {
 
     //Logging stuff
@@ -83,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
     public void setUndoButton(boolean enabled) {
         undoMoveButton.setEnabled(enabled);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
