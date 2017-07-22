@@ -45,6 +45,11 @@ public class BoardUtils {
         // convert the boolean into an int
         int color = isBlacksMove ? 1 : 2;
 
+        // Always return true for Pass
+        if (stone.getColor() == 3) {
+            return true;
+        }
+
         // Check if stone is already occupied
         if (board.getStone(stone.getX(), stone.getY()).getColor() != Stone.UNTAKEN) {
             return false;

@@ -65,6 +65,10 @@ public class Game {
             isBlacksMove = !isBlacksMove;
             previousMoves.push(new Move(stone));
             lastMove = previousMoves.lastElement();
+            if (stone.getColor() == 3) { // This was a pass. Skip setting the stone and checking for capture
+                // TODO End Game logic. If last move was also a pass end the game here
+                return true;
+            }
             board.setStone(stone);
             didStoneCauseCapture(stone);
             return true;
