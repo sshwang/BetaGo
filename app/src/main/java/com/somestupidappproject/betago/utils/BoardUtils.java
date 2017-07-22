@@ -46,7 +46,7 @@ public class BoardUtils {
         int color = isBlacksMove ? 1 : 2;
 
         // Always return true for Pass
-        if (stone.getColor() == 3) {
+        if (stone.getColor() == Stone.UNTAKEN) {
             return true;
         }
 

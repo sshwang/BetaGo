@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         setUndoButton(false);
 
         passTurnButton.setOnClickListener(v -> {
-            Stone stone = new Stone(-1, -1, 3); // Create Pass Stone
+            Stone stone = new Stone(-1, -1, Stone.UNTAKEN); // Create Pass Stone
             game.playStone(stone);
             updateMoveText();
             undoMoveButton.setEnabled(true);
