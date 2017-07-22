@@ -45,8 +45,6 @@ public class BoardView extends RelativeLayout implements View.OnTouchListener {
 
         this.setOnTouchListener(this);
 
-        this.interval = (maxSquareSize - (padding * 2)) / (this.boardSize - 1);
-
         // Setup coordinate system
         this.boardCoords = new Point[boardSize][boardSize];
         for (int i = 0; i < boardSize; i++) {
@@ -182,6 +180,8 @@ public class BoardView extends RelativeLayout implements View.OnTouchListener {
         double width = (double) maxSquareSize;
         int buffer = (int) Math.round((double) maxSquareSize * 0.05);
         this.stonePixelWidth = (int) (width - (buffer * 2)) / boardSize;
+        this.stonePixelWidth *= 1.33333;
         this.padding = buffer + (stonePixelWidth / 2);
+        this.interval = (maxSquareSize - (padding * 2)) / (this.boardSize - 1);
     }
 }
