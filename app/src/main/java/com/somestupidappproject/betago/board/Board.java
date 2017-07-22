@@ -24,7 +24,12 @@ public class Board {
 
     public void removeStone(int i, int j) { board[i][j] = new Stone(i, j, Stone.UNTAKEN); }
 
-    public void removeStone(Stone s) { board[s.getX()][s.getY()] = new Stone(s.getX(), s.getY(), Stone.UNTAKEN); }
+    public void removeStone(Stone s) {
+        if (s.getColor() == Stone.UNTAKEN) {
+            return;
+        }
+        board[s.getX()][s.getY()] = new Stone(s.getX(), s.getY(), Stone.UNTAKEN);
+    }
 
     public int getBoardSize() {
         return boardSize;

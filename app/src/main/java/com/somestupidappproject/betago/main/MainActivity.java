@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.somestupidappproject.betago.R;
 import com.somestupidappproject.betago.board.Board;
 import com.somestupidappproject.betago.board.BoardView;
+import com.somestupidappproject.betago.board.Stone;
 import com.somestupidappproject.betago.game.Game;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     //Game instantiation stuff
     Board board = new Board(19); // change board size here, 9, 13, 19.
 
-    private View undoMoveButton;
+    private View undoMoveButton, passTurnButton;
     private TextView whoseMoveTextView;
     private int maxSquareSize;
 
@@ -39,9 +40,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.board);
 
         whoseMoveTextView = (TextView) findViewById(R.id.whoseMoveTextView);
-        whoseMoveTextView.setText("Black's Turn");
 
         undoMoveButton = findViewById(R.id.undoMoveButton);
+
+        passTurnButton = findViewById(R.id.passTurnButton);
 
         boardContainer = (RelativeLayout) findViewById(R.id.board_container);
 
@@ -55,14 +57,15 @@ public class MainActivity extends AppCompatActivity {
 
         game = new Game(board);
 
+        updateMoveText();
+
         boardView = new BoardView(this, game, maxSquareSize);
 
         boardContainer.addView(boardView);
 
         undoMoveButton.setOnClickListener(v -> {
             if (game.undoMostRecentMove()) {
-                String whoseMoveText = game.isBlacksMove ? "Black's Turn" : "White's Turn";
-                whoseMoveTextView.setText(whoseMoveText);
+                updateMoveText();
                 if (game.previousMoves.size() == 0) {
                     setUndoButton(false);
                 }
@@ -70,6 +73,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         setUndoButton(false);
+
+        passTurnButton.setOnClickListener(v -> {
+            Stone stone = new Stone(-1, -1, Stone.UNTAKEN); // Create Pass Stone
+            game.playStone(stone);
+            updateMoveText();
+            undoMoveButton.setEnabled(true);
+        });
     }
 
     public void updateMoveText() {
@@ -106,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-
                     dialog.dismiss();
                     switch(which){
                         case 0:

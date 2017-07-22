@@ -13,6 +13,7 @@ public class Stone extends Point {
     public static final int UNTAKEN = 0;
     public static final int BLACK = 1;
     public static final int WHITE = 2;
+    public static final int PASS = 3;
 
     private int color;
 
