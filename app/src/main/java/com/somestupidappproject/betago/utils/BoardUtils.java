@@ -66,10 +66,7 @@ public class BoardUtils {
     public static boolean isValidMove(
             Stone stone,
             Board board,
-            boolean isBlacksMove,
             Move previousMove ) {
-        // convert the boolean into an int
-        int color = isBlacksMove ? 1 : 2;
 
         // Always return true for Pass
         if (stone.getColor() == Stone.UNTAKEN) {
@@ -87,7 +84,7 @@ public class BoardUtils {
         }
 
         // check for suicide move,
-        if (BoardUtils.isSuicideMove(stone, board, color)) {
+        if (BoardUtils.isSuicideMove(stone, board, stone.getColor())) {
             return false;
         }
 
