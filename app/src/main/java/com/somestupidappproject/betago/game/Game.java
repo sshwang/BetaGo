@@ -61,15 +61,13 @@ public class Game {
     }
 
     public boolean playStone(Stone stone) {
-        // get the previous captured stones and previously played stone
-        Stone previousPlayedStone = null;
-        ArrayList<Stone> previousCapturedStones = null;
+        // get the previous move
+        Move previousMove = null;
         if (previousMoves.size() > 0) {
-            previousCapturedStones = new ArrayList<Stone>(){{ addAll(previousMoves.lastElement().getCapturedStones()); }};
-            previousPlayedStone = previousMoves.lastElement().getStone();
+            previousMove = previousMoves.lastElement();
         }
 
-        if (BoardUtils.isValidMove(stone, board, isBlacksMove, previousCapturedStones, previousPlayedStone)) {
+        if (BoardUtils.isValidMove(stone, board, isBlacksMove, previousMove)) {
             isBlacksMove = !isBlacksMove;
             previousMoves.push(new Move(stone));
             lastMove = previousMoves.lastElement();
