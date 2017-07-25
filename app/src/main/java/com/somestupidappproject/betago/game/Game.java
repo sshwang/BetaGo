@@ -61,7 +61,15 @@ public class Game {
     }
 
     public boolean playStone(Stone stone) {
-        if (BoardUtils.isValidMove(stone, board, isBlacksMove)) {
+        // get the previous captured stones and previously played stone
+        Stone previousPlayedStone = null;
+        ArrayList<Stone> previousCapturedStones = null;
+        if (previousMoves.size() > 0) {
+            previousCapturedStones = new ArrayList<Stone>(){{ addAll(previousMoves.lastElement().getCapturedStones()); }};
+            previousPlayedStone = previousMoves.lastElement().getStone();
+        }
+
+        if (BoardUtils.isValidMove(stone, board, isBlacksMove, previousCapturedStones, previousPlayedStone)) {
             isBlacksMove = !isBlacksMove;
             previousMoves.push(new Move(stone));
             lastMove = previousMoves.lastElement();
@@ -86,23 +94,7 @@ public class Game {
     }
 
     private void didStoneCauseCapture(Stone stone) {
-        ArrayList<Stone> deadStones = new ArrayList<>();
-        if (stone.getColor() == Stone.UNTAKEN) {
-            return;
-        }
-
-        // Get all neighbors and also check if the placed point is surrounded
-        Set<Stone> neighbors = BoardUtils.getNeighbors(stone, board);
-
-        for (Stone neighbor : neighbors) {
-            if (!LogicUtil.isAlive(neighbor, board)) {
-                // Point is dead which means it's group is also dead
-                // Find the group here
-                Set<Stone> group = LogicUtil.findGroup(neighbor, board);
-                deadStones.addAll(group);
-            }
-        }
-
+        ArrayList<Stone> deadStones = BoardUtils.getDeadStones(stone, board);
         lastMove.setCapturedStones(deadStones);
         for (Stone deadStone : deadStones) {
             board.removeStone(deadStone);
