@@ -110,24 +110,26 @@ public class BoardUtils {
         if (previousCapturedStones.size() == 1) {
             Stone capturedStone = previousCapturedStones.get(0);
             if (BoardUtils.isStoneEqual(currentStone, capturedStone)) {
-                // Set the dead stone list
-                ArrayList<Stone> deadStones = new ArrayList<Stone>();
 
                 // here is where we find the neighbors that would die from playing the stone
                 Set<Stone> neighbors = BoardUtils.getNeighbors(currentStone, board);
+                Stone deadStone = null;
                 HashSet<Stone> stonesNotChecked = new HashSet<Stone>() {{ add(currentStone); }};
                 for (Stone neighbor : neighbors) {
                     if (!LogicUtil.isAlive(neighbor, board, stonesNotChecked)){
-                        deadStones.add(neighbor);
+                        if (deadStone == null) {
+                            // set the first neighbor as the dead stone
+                            deadStone = neighbor;
+                        } else {
+                            // return if there is more than one dead stone
+                            return false;
+                        }
                     }
                 }
 
-                // now verify that the dead stone is equal the previous played stone
-                if (deadStones.size() == 1) {
-                    Stone deadStone = deadStones.get(0);
-                    if (BoardUtils.isStoneEqual(deadStone, previousStone)) {
-                        return true;
-                    }
+                // now verify that the dead stone is equal to the previous played stone
+                if (BoardUtils.isStoneEqual(deadStone, previousStone)) {
+                    return true;
                 }
 
             }
