@@ -83,13 +83,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateMoveText() {
-        String whoseMoveText = game.isBlacksMove ? "Black's Turn" : "White's Turn";
-        whoseMoveTextView.setText(whoseMoveText);
+        whoseMoveTextView.setText(getTurnText());
     }
 
     public void updateMoveTextInvalid() {
-        String errorText = game.isBlacksMove ? "Invalid Move: Black's Turn" : "Invalid Move: White's Turn";
+        String errorText = "Invalid Move: ".concat(getTurnText());
         whoseMoveTextView.setText(errorText);
+    }
+
+    private String getTurnText() {
+        return game.isBlacksMove ? "Black's Turn" : "White's Turn";
     }
 
     public void setUndoButton(boolean enabled) {
