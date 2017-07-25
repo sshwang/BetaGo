@@ -2,6 +2,7 @@ package com.somestupidappproject.betago.main;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -17,6 +18,8 @@ import com.somestupidappproject.betago.board.Board;
 import com.somestupidappproject.betago.board.BoardView;
 import com.somestupidappproject.betago.board.Stone;
 import com.somestupidappproject.betago.game.Game;
+import com.somestupidappproject.betago.utils.ScoreCount;
+import com.somestupidappproject.betago.utils.ScoringUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
     private View undoMoveButton, passTurnButton;
     private TextView whoseMoveTextView;
+    private TextView blackScoreText;
+    private TextView whiteScoreText;
     private int maxSquareSize;
 
     Game game;
@@ -40,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.board);
 
         whoseMoveTextView = (TextView) findViewById(R.id.whoseMoveTextView);
+        blackScoreText = (TextView) findViewById(R.id.blackScoreText);
+        whiteScoreText = (TextView) findViewById(R.id.whiteScoreText);
 
         undoMoveButton = findViewById(R.id.undoMoveButton);
 
@@ -90,6 +97,12 @@ public class MainActivity extends AppCompatActivity {
     public void updateMoveTextInvalid() {
         String errorText = game.isBlacksMove ? "Invalid Move: Black's Turn" : "Invalid Move: White's Turn";
         whoseMoveTextView.setText(errorText);
+    }
+
+    public void updateCapturedPiecesText() {
+        ScoreCount capturesCount = ScoringUtils.getCaptureScores(game.previousMoves);
+        blackScoreText.setText("Black: " + capturesCount.getBlackScore());
+        whiteScoreText.setText("White: " + capturesCount.getWhiteScore());
     }
 
     public void setUndoButton(boolean enabled) {

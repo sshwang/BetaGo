@@ -92,6 +92,7 @@ public class BoardView extends RelativeLayout implements View.OnTouchListener {
                 }
             }
         }
+        main.updateCapturedPiecesText();
     }
 
     private void drawBoard(Canvas canvas) {

@@ -4,4 +4,6 @@
     <string name="undoMoveButton">Undo Move</string>
     <string name="resizeBoard">Resize Board</string>
     <string name="passTurn">Pass Turn</string>
+    <string name="initialWhiteScore">White: 0</string>
+    <string name="initialBlackScore">Black: 0</string>
 </resources>
