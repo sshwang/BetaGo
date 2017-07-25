@@ -1,7 +1,7 @@
 package com.somestupidappproject.betago.utils;
-
 import com.somestupidappproject.betago.board.Board;
 import com.somestupidappproject.betago.board.Stone;
+import com.somestupidappproject.betago.moves.Move;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -67,8 +67,7 @@ public class BoardUtils {
             Stone stone,
             Board board,
             boolean isBlacksMove,
-            ArrayList<Stone> previousCapturedStones,
-            Stone previousStone ) {
+            Move previousMove ) {
         // convert the boolean into an int
         int color = isBlacksMove ? 1 : 2;
 
@@ -82,13 +81,18 @@ public class BoardUtils {
             return false;
         }
 
+        // Check if it's the first move. Stone must be unoccupied and can't be suicide
+        if (previousMove == null) {
+            return true;
+        }
+
         // check for suicide move,
         if (BoardUtils.isSuicideMove(stone, board, color)) {
             return false;
         }
 
         // check for ko
-        if (BoardUtils.isKo(stone, board, previousCapturedStones, previousStone)) {
+        if (BoardUtils.isKo(stone, board, previousMove)) {
             return false;
         }
 
@@ -99,11 +103,9 @@ public class BoardUtils {
     // 1. The last move (stone 1) captured exactly one stone (stone 2)
     // 2. The current played move (stone 3) is the same position as the previous captured stone (stone 2)
     // 3. The current played stone (stone 3) captures the last played stone (stone 1)
-    private static boolean isKo(Stone currentStone, Board board, ArrayList<Stone> previousCapturedStones, Stone previousStone) {
-        // Check for null means there was no previous move
-        if (previousCapturedStones == null || previousStone == null) {
-            return false;
-        }
+    private static boolean isKo(Stone currentStone, Board board, Move previousMove) {
+        ArrayList<Stone> previousCapturedStones = previousMove.getCapturedStones();
+        Stone previousStone = previousMove.getStone();
 
         if (previousCapturedStones.size() == 1) {
             Stone capturedStone = previousCapturedStones.get(0);
