@@ -1,11 +1,9 @@
-package com.somestupidappproject.betago.activites;
+package com.somestupidappproject.betago.activities;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-
-import com.somestupidappproject.betago.activites.MainActivity;
 
 /**
  * Created by shwang on 7/27/17.

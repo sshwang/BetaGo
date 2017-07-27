@@ -1,4 +1,4 @@
-package com.somestupidappproject.betago.activites;
+package com.somestupidappproject.betago.activities;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
