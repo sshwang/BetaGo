@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 
 import com.somestupidappproject.betago.R;
 import com.somestupidappproject.betago.game.Game;
-import com.somestupidappproject.betago.main.MainActivity;
+import com.somestupidappproject.betago.activites.MainActivity;
 
 /**
  * Created by evansapienza on 7/19/17.
