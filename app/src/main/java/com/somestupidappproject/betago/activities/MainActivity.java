@@ -1,4 +1,4 @@
-package com.somestupidappproject.betago.main;
+package com.somestupidappproject.betago.activities;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.somestupidappproject.betago.R;
