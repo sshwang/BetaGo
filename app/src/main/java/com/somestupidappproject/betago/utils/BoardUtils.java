@@ -47,6 +47,11 @@ public class BoardUtils {
         Set<Stone> neighbors = BoardUtils.getNeighbors(stone, board);
 
         for (Stone neighbor : neighbors) {
+            // you can't kill your own stones
+            if (stone.getColor() == neighbor.getColor()) {
+                continue;
+            }
+
             if (!LogicUtil.isAlive(neighbor, board)) {
                 // Point is dead which means it's group is also dead
                 // Find the group here
@@ -66,10 +71,7 @@ public class BoardUtils {
     public static boolean isValidMove(
             Stone stone,
             Board board,
-            boolean isBlacksMove,
             Move previousMove ) {
-        // convert the boolean into an int
-        int color = isBlacksMove ? 1 : 2;
 
         // Always return true for Pass
         if (stone.getColor() == Stone.UNTAKEN) {
@@ -87,7 +89,7 @@ public class BoardUtils {
         }
 
         // check for suicide move,
-        if (BoardUtils.isSuicideMove(stone, board, color)) {
+        if (BoardUtils.isSuicideMove(stone, board, stone.getColor())) {
             return false;
         }
 
@@ -110,24 +112,21 @@ public class BoardUtils {
         if (previousCapturedStones.size() == 1) {
             Stone capturedStone = previousCapturedStones.get(0);
             if (BoardUtils.isStoneEqual(currentStone, capturedStone)) {
-                // Set the dead stone list
-                ArrayList<Stone> deadStones = new ArrayList<Stone>();
 
                 // here is where we find the neighbors that would die from playing the stone
                 Set<Stone> neighbors = BoardUtils.getNeighbors(currentStone, board);
+                ArrayList<Stone> deadStones = new ArrayList<Stone>(){};
                 HashSet<Stone> stonesNotChecked = new HashSet<Stone>() {{ add(currentStone); }};
                 for (Stone neighbor : neighbors) {
                     if (!LogicUtil.isAlive(neighbor, board, stonesNotChecked)){
-                        deadStones.add(neighbor);
+                        Set<Stone> group = LogicUtil.findGroup(neighbor, board);
+                        deadStones.addAll(group);
                     }
                 }
 
-                // now verify that the dead stone is equal the previous played stone
-                if (deadStones.size() == 1) {
-                    Stone deadStone = deadStones.get(0);
-                    if (BoardUtils.isStoneEqual(deadStone, previousStone)) {
-                        return true;
-                    }
+                // now verify that the dead stone is equal to the previous played stone
+                if (deadStones.size() == 1 && BoardUtils.isStoneEqual(deadStones.get(0), previousStone)) {
+                    return true;
                 }
 
             }

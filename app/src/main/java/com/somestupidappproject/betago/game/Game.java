@@ -61,7 +61,7 @@ public class Game {
     }
 
     public boolean playStone(Stone stone) {
-        if (BoardUtils.isValidMove(stone, board, isBlacksMove, !previousMoves.isEmpty() ? previousMoves.lastElement() : null)) {
+        if (BoardUtils.isValidMove(stone, board, !previousMoves.isEmpty() ? previousMoves.lastElement() : null)) {
             isBlacksMove = !isBlacksMove;
             previousMoves.push(new Move(stone));
             lastMove = previousMoves.lastElement();
