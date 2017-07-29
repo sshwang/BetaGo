@@ -6,10 +6,8 @@ import com.somestupidappproject.betago.board.Board;
 import com.somestupidappproject.betago.board.Stone;
 import com.somestupidappproject.betago.moves.Move;
 import com.somestupidappproject.betago.utils.BoardUtils;
-import com.somestupidappproject.betago.utils.LogicUtil;
 
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.Stack;
 
 /**
@@ -25,6 +23,7 @@ public class Game {
     public Move lastMove;
     public Stack<Move> previousMoves;
     public boolean isBlacksMove;
+    public boolean isGameOver;
 
     //game statistic stuff
     private int whiteCaptures = 0;
@@ -34,6 +33,7 @@ public class Game {
         this.board = board;
         this.previousMoves = new Stack<>();
         this.isBlacksMove = true;
+        this.isGameOver = false;
     }
 
     public boolean undoMostRecentMove() {
@@ -64,11 +64,17 @@ public class Game {
         if (BoardUtils.isValidMove(stone, board, !previousMoves.isEmpty() ? previousMoves.lastElement() : null)) {
             isBlacksMove = !isBlacksMove;
             previousMoves.push(new Move(stone));
-            lastMove = previousMoves.lastElement();
             if (stone.getColor() == Stone.UNTAKEN) { // This was a pass. Skip setting the stone and checking for capture
-                // TODO End Game logic. If last move was also a pass end the game here
+                if (lastMove != null && lastMove.getStone().getColor() == Stone.UNTAKEN) {
+                    isGameOver = true;
+                }
+                lastMove = previousMoves.lastElement();
                 return true;
+            } else {
+                //this move is not a pass therefore the game is not over
+                isGameOver = false;
             }
+            lastMove = previousMoves.lastElement();
             board.setStone(stone);
             didStoneCauseCapture(stone);
             return true;

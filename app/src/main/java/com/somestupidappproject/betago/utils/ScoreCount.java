@@ -1,5 +1,7 @@
 package com.somestupidappproject.betago.utils;
 
+import com.somestupidappproject.betago.player.Player;
+
 /**
  * Created by Sagar Patel on 7/24/2017.
  */
@@ -17,28 +19,33 @@ public class ScoreCount {
         blackScore = initialBlackScore;
     }
 
-    public int getWhiteScore() {
-        return whiteScore;
+    public int getScore(String player) {
+        int score = 0;
+        if (player == Player.BLACK) {
+            score = blackScore;
+        }
+        else if (player == Player.WHITE) {
+            score = whiteScore;
+        }
+        return score;
     }
 
-    public int getBlackScore() {
-        return blackScore;
+    public void incrementPlayerScore(String player) {
+        if (player == Player.BLACK) {
+            blackScore += 1;
+        }
+        else if (player == Player.WHITE) {
+            whiteScore += 1;
+        }
     }
 
-    public void incrementWhiteScore() {
-        updateWhiteScore(1);
-    }
-
-    public void incrementBlackScore() {
-        updateBlackScore(1);
-    }
-
-    public void updateWhiteScore(int score) {
-        whiteScore += score;
-    }
-
-    public void updateBlackScore(int score) {
-        blackScore += score;
+    public void updateScore (String player, int score) {
+        if (player == Player.BLACK) {
+            blackScore += score;
+        }
+        else if (player == Player.WHITE) {
+            whiteScore += score;
+        }
     }
 
 }

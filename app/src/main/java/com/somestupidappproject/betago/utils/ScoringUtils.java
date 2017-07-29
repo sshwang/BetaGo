@@ -3,6 +3,7 @@ package com.somestupidappproject.betago.utils;
 import com.somestupidappproject.betago.board.Board;
 import com.somestupidappproject.betago.board.Stone;
 import com.somestupidappproject.betago.moves.Move;
+import com.somestupidappproject.betago.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,34 +22,44 @@ public class ScoringUtils {
      * @param board
      * @param previousMoves
      * @return
-     *  returns 1 if black wins
-     *  returns 2 if white wins
-     *  returns -1 if tie
+     *  returns Player.BLACK if black wins
+     *  returns Player.WHITE if WHITE wins
+     *  returns TIE if tie
      */
-    public static int getWinningPlayer(Board board, Stack<Move> previousMoves) {
+    public static String getWinningPlayer(Board board, Stack<Move> previousMoves) {
         ScoreCount captureScores = getCaptureScores(previousMoves);
-        int blackScore = captureScores.getBlackScore();
-        int whiteScore = captureScores.getWhiteScore();
+        ScoreCount territoryScores = getTerritoryScores(board);
 
+        int blackScore = captureScores.getScore(Player.BLACK) + territoryScores.getScore(Player.BLACK);
+        int whiteScore = captureScores.getScore(Player.WHITE) + territoryScores.getScore(Player.WHITE);
+        if (blackScore > whiteScore) {
+            return Player.BLACK;
+        } else if (whiteScore > blackScore) {
+            return Player.WHITE;
+        }
+        return "TIE";
+    }
+
+    /**
+     * given the current board returns points for territories that are uncontested for both players
+     * @param board the current board
+     * @return the scores awarded to each player for capturing territories
+     */
+    public static ScoreCount getTerritoryScores(Board board) {
+        ScoreCount territoryScores = new ScoreCount();
         for (int i = 0; i < board.getBoardSize(); i++) {
             for (int j = 0; j < board.getBoardSize(); j++) {
                 if (board.getStone(i, j).getColor() == 0) {
                     int territoryOwner = LogicUtil.getTerritoryOwner(board, board.getStone(i, j));
                     if (territoryOwner == 1) {
-                        blackScore++;
+                        territoryScores.incrementPlayerScore(Player.BLACK);
                     } else if (territoryOwner == 2) {
-                        whiteScore++;
+                        territoryScores.incrementPlayerScore(Player.WHITE);
                     }
                 }
             }
         }
-
-        if (blackScore > whiteScore) {
-            return Stone.BLACK;
-        } else if (whiteScore > blackScore) {
-            return Stone.WHITE;
-        }
-        return -1;
+        return territoryScores;
     }
 
     /**
@@ -63,10 +74,10 @@ public class ScoringUtils {
             move.getCapturedStones().forEach((capturedStone) -> {
                 if (capturedStone.getColor() == Stone.BLACK) {
                     //stone taken was black so white gets the point
-                    scoreCount.incrementWhiteScore();
+                    scoreCount.incrementPlayerScore(Player.WHITE);
                 } else if (capturedStone.getColor() == Stone.WHITE) {
                     //stone taken was white so black gets the point
-                    scoreCount.incrementBlackScore();
+                    scoreCount.incrementPlayerScore(Player.BLACK);
                 }
             });
         });
