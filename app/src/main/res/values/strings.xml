@@ -4,4 +4,10 @@
     <string name="undoMoveButton">Undo Move</string>
     <string name="resizeBoard">Resize Board</string>
     <string name="passTurn">Pass Turn</string>
+    <string name="initialWhiteScore">White: 0</string>
+    <string name="initialBlackScore">Black: 0</string>
+    <string name="winner_is">Winner Is: </string>
+    <string name="newgame">New Game?</string>
+    <string name="backToGameButton">Back To Game?</string>
+    <string name="title_activity_end_game">EndGameActivity</string>
 </resources>

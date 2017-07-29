@@ -12,7 +12,7 @@ import java.util.Set;
  */
 
 public class BoardUtils {
-    private static final String TAG = "betago.EndGameUtils";
+    private static final String TAG = "betago.ScoringUtils";
 
     // Get the neighbors of the given node
     public static Set<Stone> getNeighbors(Stone stone, Board board) {

@@ -1,7 +1,9 @@
 package com.somestupidappproject.betago.main;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.os.ResultReceiver;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -9,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.somestupidappproject.betago.R;
@@ -17,6 +18,9 @@ import com.somestupidappproject.betago.board.Board;
 import com.somestupidappproject.betago.board.BoardView;
 import com.somestupidappproject.betago.board.Stone;
 import com.somestupidappproject.betago.game.Game;
+import com.somestupidappproject.betago.player.Player;
+import com.somestupidappproject.betago.utils.ScoreCount;
+import com.somestupidappproject.betago.utils.ScoringUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
 
     private View undoMoveButton, passTurnButton;
     private TextView whoseMoveTextView;
+    private TextView blackScoreText;
+    private TextView whiteScoreText;
     private int maxSquareSize;
 
     Game game;
@@ -40,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.board);
 
         whoseMoveTextView = (TextView) findViewById(R.id.whoseMoveTextView);
-
+        blackScoreText = (TextView) findViewById(R.id.blackScoreText);
+        whiteScoreText = (TextView) findViewById(R.id.whiteScoreText);
         undoMoveButton = findViewById(R.id.undoMoveButton);
 
         passTurnButton = findViewById(R.id.passTurnButton);
@@ -79,7 +86,11 @@ public class MainActivity extends AppCompatActivity {
             game.playStone(stone);
             updateMoveText();
             undoMoveButton.setEnabled(true);
+            if (game.isGameOver) {
+                transitionToEndGameScreen();
+            }
         });
+
     }
 
     public void updateMoveText() {
@@ -91,8 +102,16 @@ public class MainActivity extends AppCompatActivity {
         whoseMoveTextView.setText(errorText);
     }
 
+    public void updateCapturedPiecesText() {
+        ScoreCount capturesCount = ScoringUtils.getCaptureScores(game.previousMoves);
+        String blackScore = Player.BLACK + ": " + capturesCount.getScore(Player.BLACK);
+        String whiteScore = Player.WHITE + ": " + capturesCount.getScore(Player.WHITE);
+        blackScoreText.setText(blackScore);
+        whiteScoreText.setText(whiteScore);
+    }
+
     private String getTurnText() {
-        return game.isBlacksMove ? "Black's Turn" : "White's Turn";
+        return game.isBlacksMove ? Player.BLACK + "'s Turn" : Player.WHITE + "'s Turn";
     }
 
     public void setUndoButton(boolean enabled) {
@@ -152,6 +171,20 @@ public class MainActivity extends AppCompatActivity {
         boardContainer.removeView(boardView);
         boardView = new BoardView(this, game, maxSquareSize);
         boardContainer.addView(boardView);
-        whoseMoveTextView.setText("Black's Turn");
+        whoseMoveTextView.setText(Player.BLACK + "'s Turn");
+    }
+
+    private void transitionToEndGameScreen() {
+        Intent nextActivity = new Intent(this, EndGameActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("winnerText", ScoringUtils.getWinningPlayer(board, game.previousMoves));
+        nextActivity.putExtras(bundle);
+        nextActivity.putExtra("endLastGame", new ResultReceiver(null) {
+            @Override
+            protected void onReceiveResult(int resultCode, Bundle resultData) {
+                MainActivity.this.finish();
+            }
+        });
+        startActivityForResult(nextActivity,1);
     }
 }
