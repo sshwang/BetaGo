@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             game.playStone(stone);
             updateMoveText();
             undoMoveButton.setEnabled(true);
-            if (game.isGameOver) {
+            if (game.isGameOver()) {
                 transitionToEndGameScreen();
             }
         });

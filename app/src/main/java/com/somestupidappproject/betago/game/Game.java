@@ -23,7 +23,6 @@ public class Game {
     public Move lastMove;
     public Stack<Move> previousMoves;
     public boolean isBlacksMove;
-    public boolean isGameOver;
 
     //game statistic stuff
     private int whiteCaptures = 0;
@@ -33,7 +32,6 @@ public class Game {
         this.board = board;
         this.previousMoves = new Stack<>();
         this.isBlacksMove = true;
-        this.isGameOver = false;
     }
 
     public boolean undoMostRecentMove() {
@@ -54,6 +52,8 @@ public class Game {
 
             // Switch players.
             isBlacksMove = !isBlacksMove;
+
+            //if we undo a move the game cannot be over
             return true;
         } else {
             return false;
@@ -64,16 +64,6 @@ public class Game {
         if (BoardUtils.isValidMove(stone, board, !previousMoves.isEmpty() ? previousMoves.lastElement() : null)) {
             isBlacksMove = !isBlacksMove;
             previousMoves.push(new Move(stone));
-            if (stone.getColor() == Stone.UNTAKEN) { // This was a pass. Skip setting the stone and checking for capture
-                if (lastMove != null && lastMove.getStone().getColor() == Stone.UNTAKEN) {
-                    isGameOver = true;
-                }
-                lastMove = previousMoves.lastElement();
-                return true;
-            } else {
-                //this move is not a pass therefore the game is not over
-                isGameOver = false;
-            }
             lastMove = previousMoves.lastElement();
             board.setStone(stone);
             didStoneCauseCapture(stone);
@@ -99,4 +89,29 @@ public class Game {
             Log.d(TAG, "DEAD");
         }
     }
+
+    public boolean isGameOver() {
+        //The game can't be over if there are less than two moves
+        if (previousMoves.size() < 2) {
+            return false;
+        }
+
+        Move lastMove = previousMoves.pop();
+        Move secondLastMove = previousMoves.pop();
+
+        try {
+            if (lastMove.getStone().getColor() == Stone.UNTAKEN
+                && secondLastMove.getStone().getColor() == Stone.UNTAKEN) {
+                return true;
+            }
+        } finally {
+            previousMoves.push(secondLastMove);
+            previousMoves.push(lastMove);
+        }
+
+        return false;
+
+
+    }
+
 }
