@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             Stone stone = new Stone(-1, -1, Stone.UNTAKEN); // Create Pass Stone
             game.playStone(stone);
             updateMoveText();
-            undoMoveButton.setEnabled(true);
+            setUndoButton(true);
             if (game.isGameOver()) {
                 transitionToEndGameScreen();
             }
