@@ -19,6 +19,9 @@ public class Board {
     }
 
     public void setStone(Stone stone) {
+        if (stone.getColor() == Stone.UNTAKEN) {
+            return;
+        }
         board[stone.getX()][stone.getY()] = stone;
     }
 
