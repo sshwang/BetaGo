@@ -29,9 +29,14 @@ public class ScoringUtils {
     public static String getWinningPlayer(Board board, Stack<Move> previousMoves) {
         ScoreCount captureScores = getCaptureScores(previousMoves);
         ScoreCount territoryScores = getTerritoryScores(board);
+        ScoreCount influenceScores = getInfluenceScore(board);
 
-        int blackScore = captureScores.getScore(Player.BLACK) + territoryScores.getScore(Player.BLACK);
-        int whiteScore = captureScores.getScore(Player.WHITE) + territoryScores.getScore(Player.WHITE);
+        int blackScore = captureScores.getScore(Player.BLACK) +
+                territoryScores.getScore(Player.BLACK) +
+                influenceScores.getScore(Player.BLACK);
+        int whiteScore = captureScores.getScore(Player.WHITE) +
+                territoryScores.getScore(Player.WHITE) +
+                influenceScores.getScore(Player.WHITE);
         if (blackScore > whiteScore) {
             return Player.BLACK;
         } else if (whiteScore > blackScore) {
@@ -82,5 +87,10 @@ public class ScoringUtils {
             });
         });
         return scoreCount;
+    }
+
+    public static ScoreCount getInfluenceScore(Board board) {
+        InfluenceBoard influenceBoard = new InfluenceBoard(board.getBoardSize(), board.getStones());
+        return influenceBoard.getInfluenceScore();
     }
 }

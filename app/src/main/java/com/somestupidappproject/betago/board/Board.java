@@ -1,5 +1,8 @@
 package com.somestupidappproject.betago.board;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by sapatel on 7/15/2017.
  */
@@ -48,5 +51,17 @@ public class Board {
 
     public void resetBoard() {
         initializeBoard();
+    }
+
+    public List<Stone> getStones() {
+        List<Stone> stoneList = new ArrayList<>();
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                if (board[i][j].getColor() != Stone.UNTAKEN) {
+                    stoneList.add(board[i][j]);
+                }
+            }
+        }
+        return stoneList;
     }
 }
